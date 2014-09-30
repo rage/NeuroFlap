@@ -54,6 +54,7 @@ var play_state = {
 
         this.bird.alive = false;
         this.game.time.events.remove(this.timer);
+        this.game.time.events.remove(this.shapeTimer);
 
         this.pipes.forEachAlive(function(p){
             p.body.velocity.x = 0;
@@ -62,6 +63,7 @@ var play_state = {
 
     restart_game: function() {
         this.game.time.events.remove(this.timer);
+        this.game.time.events.remove(this.shapeTimer);
 
         // This time we go back to the 'menu' state
         this.game.state.start('menu');
