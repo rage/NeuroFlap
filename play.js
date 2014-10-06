@@ -16,14 +16,18 @@ var play_state = {
         this.shapeTimer = this.game.time.events.loop(2000, this.new_shape, this);
         this.shapeOn = false;
 
-        this.bird = this.game.add.sprite(150, 385, 'bird');
+        this.bird = this.game.add.sprite(150, 450, 'bird');
         this.bird.body.gravity.y = 0; 
         this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ["Circle", "Triangle", "Square", "Pentagram"];
 
+        this.hitShield = false;
+
         // No 'this.score', but just 'score'
-        score = 0; 
+        score = 0.0; 
+        this.cleared = 0;
+        this.total = 0;
         var style = { font: "30px Arial", fill: "#ffffff" };
         this.label_score = this.game.add.text(20, 20, "0", style); 
     },
@@ -43,6 +47,11 @@ var play_state = {
             this.text.x = this.bird.x;   
         }
 
+        console.log("cleared: " + this.cleared);
+        console.log("total: " + this.total);
+
+        this.bird.body.velocity.x = this.bird.body.velocity.x * 0.95;
+
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
     },
 
@@ -50,37 +59,37 @@ var play_state = {
         if (this.bird.alive == false)
             return; 
 
-        this.bird.body.velocity.x = -120;
-        this.game.add.tween(this.bird).to({angle: 10}, 100).start();
+        this.bird.body.velocity.x = -220;
+        this.game.add.tween(this.bird).to({angle: -10}, 100).start();
     },
 
     right: function() {
         if (this.bird.alive == false)
             return; 
 
-        this.bird.body.velocity.x = 120;
-        this.game.add.tween(this.bird).to({angle: -10}, 100).start();
+        this.bird.body.velocity.x = 220;
+        this.game.add.tween(this.bird).to({angle: 10}, 100).start();
     },
 
     hit_pipe: function() {
         if (this.bird.alive == false)
             return;
+        if(!this.hitShield){
+            this.cleared--;
+            this.hitShield = true;
+            console.log("shield on!");    
+            this.game.time.events.add(500,this.hit_shield_off, this);
+        }
+    },
 
-        this.bird.alive = false;
-        this.bird.body.velocity.y = 0;
-        this.game.time.events.remove(this.timer);
-        this.game.time.events.remove(this.shapeTimer);
-
-        this.pipes.forEachAlive(function(p){
-            p.body.velocity.y = 0;
-        }, this);
-        this.restart_timer = this.game.time.events.loop(500, this.restart_game, this);;
+    hit_shield_off: function() {
+        console.log(this.hitShield);
+        this.hitShield = false;
     },
 
     restart_game: function() {
         this.game.time.events.remove(this.timer);
         this.game.time.events.remove(this.shapeTimer);
-        this.game.time.events.remove(this.restart_timer);
 
         // This time we go back to the 'menu' state
         this.game.state.start('menu');
@@ -98,22 +107,21 @@ var play_state = {
 
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole +1) 
-                this.add_one_pipe(i*50, 10);   
+                this.add_one_pipe(i*50, -50);   
 
         // No 'this.score', but just 'score'
-        score += 1; 
+        this.total++;
+        this.cleared++;
+        score = this.cleared/this.total * 1.0; 
         this.label_score.content = score;  
     },
 
     new_shape: function() {
-        console.log("turning on!");
-
         this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)])
         this.game.time.events.add(500,this.shape_off,null,this.text);
     },
 
     shape_off: function(object) {
-        console.log("turning off!");
         object.destroy();
     }
 };
