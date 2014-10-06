@@ -3,8 +3,11 @@ var play_state = {
     // No more 'preload' function, since it is already done in the 'load' state
 
     create: function() { 
-        var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        space_key.onDown.add(this.jump, this); 
+        var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACE);
+        var left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        var right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        left_key.onDown.add(this.left, this); 
+        right_key.onDown.add(this.right, this);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(20, 'pipe');  
@@ -13,9 +16,9 @@ var play_state = {
         this.shapeTimer = this.game.time.events.loop(2000, this.new_shape, this);
         this.shapeOn = false;
 
-        this.bird = this.game.add.sprite(100, 245, 'bird');
-        this.bird.body.gravity.y = 1100; 
-        this.bird.anchor.setTo(-0.2, 0.5);
+        this.bird = this.game.add.sprite(150, 385, 'bird');
+        this.bird.body.gravity.y = 0; 
+        this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ["Circle", "Triangle", "Square", "Pentagram"];
 
@@ -29,23 +32,34 @@ var play_state = {
         if (this.bird.inWorld == false)
             this.restart_game(); 
 
-        if (this.bird.angle < 20)
-            this.bird.angle += 1;
+        if (this.bird.angle < 0)
+            this.bird.angle++;
+
+        if(this.bird.angle > 0){
+            this.bird.angle--;
+        }
 
         if(this.text){
-            this.text.y = this.bird.y - 40;   
-            console.log(this.text.text);
+            this.text.x = this.bird.x;   
         }
 
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
     },
 
-    jump: function() {
+    left: function() {
         if (this.bird.alive == false)
             return; 
 
-        this.bird.body.velocity.y = -350;
-        this.game.add.tween(this.bird).to({angle: -20}, 100).start();
+        this.bird.body.velocity.x = -120;
+        this.game.add.tween(this.bird).to({angle: 10}, 100).start();
+    },
+
+    right: function() {
+        if (this.bird.alive == false)
+            return; 
+
+        this.bird.body.velocity.x = 120;
+        this.game.add.tween(this.bird).to({angle: -10}, 100).start();
     },
 
     hit_pipe: function() {
@@ -53,17 +67,20 @@ var play_state = {
             return;
 
         this.bird.alive = false;
+        this.bird.body.velocity.y = 0;
         this.game.time.events.remove(this.timer);
         this.game.time.events.remove(this.shapeTimer);
 
         this.pipes.forEachAlive(function(p){
-            p.body.velocity.x = 0;
+            p.body.velocity.y = 0;
         }, this);
+        this.restart_timer = this.game.time.events.loop(500, this.restart_game, this);;
     },
 
     restart_game: function() {
         this.game.time.events.remove(this.timer);
         this.game.time.events.remove(this.shapeTimer);
+        this.game.time.events.remove(this.restart_timer);
 
         // This time we go back to the 'menu' state
         this.game.state.start('menu');
@@ -72,7 +89,7 @@ var play_state = {
     add_one_pipe: function(x, y) {
         var pipe = this.pipes.getFirstDead();
         pipe.reset(x, y);
-        pipe.body.velocity.x = -200; 
+        pipe.body.velocity.y = 200; 
         pipe.outOfBoundsKill = true;
     },
 
@@ -81,7 +98,7 @@ var play_state = {
 
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole +1) 
-                this.add_one_pipe(400, i*60+10);   
+                this.add_one_pipe(i*50, 10);   
 
         // No 'this.score', but just 'score'
         score += 1; 
@@ -91,7 +108,7 @@ var play_state = {
     new_shape: function() {
         console.log("turning on!");
 
-        this.text = this.game.add.text(this.bird.body.x + 10, this.bird.body.y, this.shapes[Math.floor(Math.random()*this.shapes.length)])
+        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)])
         this.game.time.events.add(500,this.shape_off,null,this.text);
     },
 
