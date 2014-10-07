@@ -6,8 +6,10 @@ var play_state = {
         var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACE);
         var left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         var right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        var q_key = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
         left_key.onDown.add(this.left, this); 
         right_key.onDown.add(this.right, this);
+        q_key.onDown.add(this.react, this);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(20, 'pipe');  
@@ -28,8 +30,10 @@ var play_state = {
         score = 0.0; 
         this.cleared = 0;
         this.total = 0;
+        this.reactions = 0;
         var style = { font: "30px Arial", fill: "#ffffff" };
-        this.label_score = this.game.add.text(20, 20, "0", style); 
+        this.label_score = this.game.add.text(20, 20, "0", style);
+        this.reactions_score = this.game.add.text(350, 20, "0", style); 
     },
 
     update: function() {
@@ -46,10 +50,6 @@ var play_state = {
         if(this.text){
             this.text.x = this.bird.x;   
         }
-
-        console.log("cleared: " + this.cleared);
-        console.log("total: " + this.total);
-
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.95;
 
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
@@ -69,6 +69,14 @@ var play_state = {
 
         this.bird.body.velocity.x = 220;
         this.game.add.tween(this.bird).to({angle: 10}, 100).start();
+    },
+
+    react: function() {
+        if(this.text.exists){
+            console.log(this.text);
+            this.reactions++;
+            this.reactions_score.content = this.reactions;
+        }
     },
 
     hit_pipe: function() {
@@ -112,12 +120,12 @@ var play_state = {
         // No 'this.score', but just 'score'
         this.total++;
         this.cleared++;
-        score = this.cleared/this.total * 1.0; 
-        this.label_score.content = score;  
+        score = (this.cleared/this.total * 1.0).toFixed(2) * 100;
+        this.label_score.content = score + "%";  
     },
 
     new_shape: function() {
-        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)])
+        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)]);
         this.game.time.events.add(500,this.shape_off,null,this.text);
     },
 
