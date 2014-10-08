@@ -6,8 +6,14 @@ var play_state = {
         var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACE);
         this.left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        var q_key = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
-        q_key.onDown.add(this.react, this);
+        var key1 = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE);
+        var key2 = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO);
+        var key3 = this.game.input.keyboard.addKey(Phaser.Keyboard.THREE);
+        var key4 = this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR);
+        key1.onDown.add(this.react, this, key1);
+        key2.onDown.add(this.react, this, key2);
+        key3.onDown.add(this.react, this, key3);
+        key4.onDown.add(this.react, this, key4);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(20, 'pipe');  
@@ -20,7 +26,7 @@ var play_state = {
         this.bird.body.gravity.y = 0; 
         this.bird.anchor.setTo(0.5, 0.5);
 
-        this.shapes = ["Circle", "Triangle", "Square", "Pentagram"];
+        this.shapes = {'Circle': key1.keyCode, 'Triangle': key2.keyCode, 'Square': key3.keyCode, 'Pentagram': key4.keyCode}; 
 
         this.hitShield = false;
 
@@ -65,11 +71,15 @@ var play_state = {
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
     },
 
-    react: function() {
+    react: function(key) {
         if(this.text.exists && this.shapeReactable){
+            console.log(this.text.text);
+            console.log(this.shapes['Square']);
+            console.log(key.keyCode);
+            if(this.shapes[this.text.text] == key.keyCode){
+                this.reactions++;        
+            }
             this.shapeReactable = false;
-            console.log(this.reactions);
-            this.reactions++;
             this.reactionScore = Math.floor(this.reactions/this.totalReactions*100);
             this.reactions_score.content = this.reactionScore + "%";
             this.text.destroy();
@@ -82,7 +92,6 @@ var play_state = {
         if(!this.hitShield){
             this.cleared--;
             this.hitShield = true;
-            console.log("shield on!");    
             this.game.time.events.add(500,this.hit_shield_off, this);
         }
     },
@@ -122,10 +131,10 @@ var play_state = {
     },
 
     new_shape: function() {
-        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)]);
+        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, Object.keys(this.shapes)[Math.floor(Math.random()*Object.keys(this.shapes).length)]);
         this.shapeReactable = true;
         this.totalReactions++;
-        this.game.time.events.add(500,this.shape_off,this,this.text);
+        this.game.time.events.add(700,this.shape_off,this,this.text);
     },
 
     shape_off: function(object) {
