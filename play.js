@@ -78,7 +78,7 @@ var play_state = {
             this.shapeReactable = false;
             console.log(this.reactions);
             this.reactions++;
-            this.reactionScore = (this.reactions/this.totalReactions * 1.0).toFixed(2) * 100;
+            this.reactionScore = Math.floor(this.reactions/this.totalReactions*100);
             this.reactions_score.content = this.reactionScore + "%";
             this.text.destroy();
         }
@@ -125,7 +125,7 @@ var play_state = {
         // No 'this.score', but just 'score'
         this.total++;
         this.cleared++;
-        score = (this.cleared/this.total * 1.0).toFixed(2) * 100;
+        score = Math.floor(this.cleared/this.total*100);
         this.label_score.content = score + "%";  
     },
 
@@ -138,7 +138,7 @@ var play_state = {
 
     shape_off: function(object) {
         this.shapeReactable = false;
-        this.reactionScore = (this.reactions/this.totalReactions * 1.0).toFixed(2) * 100;
+        this.reactionScore = Math.floor(this.reactions/this.totalReactions*100);
         this.reactions_score.content = this.reactionScore + "%";
         if(object.exists){
             object.destroy();
