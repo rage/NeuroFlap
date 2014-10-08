@@ -4,11 +4,9 @@ var play_state = {
 
     create: function() { 
         var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACE);
-        var left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-        var right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        this.left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
         var q_key = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
-        left_key.onDown.add(this.left, this); 
-        right_key.onDown.add(this.right, this);
         q_key.onDown.add(this.react, this);
 
         this.pipes = game.add.group();
@@ -52,25 +50,19 @@ var play_state = {
         if(this.text){
             this.text.x = this.bird.x;   
         }
-        this.bird.body.velocity.x = this.bird.body.velocity.x * 0.95;
+
+        if(this.left_key.isDown){
+            this.bird.body.velocity.x -= 20;
+            //this.game.add.tween(this.bird).to({angle: -10}, 100).start();    
+        }
+        if(this.right_key.isDown){
+            this.bird.body.velocity.x += 20;
+            //this.game.add.tween(this.bird).to({angle: 10}, 100).start();    
+        }
+        this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
+        this.bird.angle = this.bird.body.velocity.x / 10;
 
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
-    },
-
-    left: function() {
-        if (this.bird.alive == false)
-            return; 
-
-        this.bird.body.velocity.x = -220;
-        this.game.add.tween(this.bird).to({angle: -10}, 100).start();
-    },
-
-    right: function() {
-        if (this.bird.alive == false)
-            return; 
-
-        this.bird.body.velocity.x = 220;
-        this.game.add.tween(this.bird).to({angle: 10}, 100).start();
     },
 
     react: function() {
