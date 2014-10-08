@@ -31,9 +31,11 @@ var play_state = {
         this.cleared = 0;
         this.total = 0;
         this.reactions = 0;
+        this.totalReactions = 0;
+        this.reactionScore = 0;
         var style = { font: "30px Arial", fill: "#ffffff" };
         this.label_score = this.game.add.text(20, 20, "0", style);
-        this.reactions_score = this.game.add.text(350, 20, "0", style); 
+        this.reactions_score = this.game.add.text(330, 20, "0", style); 
     },
 
     update: function() {
@@ -72,10 +74,13 @@ var play_state = {
     },
 
     react: function() {
-        if(this.text.exists){
-            console.log(this.text);
+        if(this.text.exists && this.shapeReactable){
+            this.shapeReactable = false;
+            console.log(this.reactions);
             this.reactions++;
-            this.reactions_score.content = this.reactions;
+            this.reactionScore = (this.reactions/this.totalReactions * 1.0).toFixed(2) * 100;
+            this.reactions_score.content = this.reactionScore + "%";
+            this.text.destroy();
         }
     },
 
@@ -126,10 +131,17 @@ var play_state = {
 
     new_shape: function() {
         this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)]);
-        this.game.time.events.add(500,this.shape_off,null,this.text);
+        this.shapeReactable = true;
+        this.totalReactions++;
+        this.game.time.events.add(500,this.shape_off,this,this.text);
     },
 
     shape_off: function(object) {
-        object.destroy();
+        this.shapeReactable = false;
+        this.reactionScore = (this.reactions/this.totalReactions * 1.0).toFixed(2) * 100;
+        this.reactions_score.content = this.reactionScore + "%";
+        if(object.exists){
+            object.destroy();
+        }
     }
 };
