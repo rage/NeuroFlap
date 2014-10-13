@@ -14,6 +14,7 @@ var play_state = {
         key2.onDown.add(this.react, this, key2);
         key3.onDown.add(this.react, this, key3);
         key4.onDown.add(this.react, this, key4);
+        space_key.onDown.add(function(){},this);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(20, 'pipe');  
@@ -31,6 +32,8 @@ var play_state = {
         this.hitShield = false;
 
         // No 'this.score', but just 'score'
+        this.reaction_score_array = new Array();
+        this.set_up_arrays(this.reaction_score_array);
         score = 0.0; 
         this.cleared = 0;
         this.total = 0;
@@ -59,11 +62,9 @@ var play_state = {
 
         if(this.left_key.isDown){
             this.bird.body.velocity.x -= 20;
-            //this.game.add.tween(this.bird).to({angle: -10}, 100).start();    
         }
         if(this.right_key.isDown){
             this.bird.body.velocity.x += 20;
-            //this.game.add.tween(this.bird).to({angle: 10}, 100).start();    
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
@@ -73,15 +74,14 @@ var play_state = {
 
     react: function(key) {
         if(this.text.exists && this.shapeReactable){
-            console.log(this.text.text);
-            console.log(this.shapes['Square']);
-            console.log(key.keyCode);
             if(this.shapes[this.text.text] == key.keyCode){
-                this.reactions++;        
+                this.reactions++;    
+                this.reaction_score_array.push(1);    
+            } else {
+                this.reaction_score_array.push(0);
             }
             this.shapeReactable = false;
-            this.reactionScore = Math.floor(this.reactions/this.totalReactions*100);
-            this.reactions_score.content = this.reactionScore + "%";
+            this.update_reactions_score();
             this.text.destroy();
         }
     },
@@ -97,7 +97,6 @@ var play_state = {
     },
 
     hit_shield_off: function() {
-        console.log(this.hitShield);
         this.hitShield = false;
     },
 
@@ -126,6 +125,7 @@ var play_state = {
         // No 'this.score', but just 'score'
         this.total++;
         this.cleared++;
+
         score = Math.floor(this.cleared/this.total*100);
         this.label_score.content = score + "%";  
     },
@@ -137,11 +137,36 @@ var play_state = {
         this.game.time.events.add(700,this.shape_off,this,this.text);
     },
 
+    update_reactions_score: function() {
+        var array_start = this.reaction_score_array.length - 25;
+        if(array_start < 0){
+            array_start = 0;
+        }
+        var count = 0;
+        for (var i = array_start; i < this.reaction_score_array.length; i++) {
+            count += this.reaction_score_array[i];
+        };
+        console.log(count);
+
+        this.reactionScore = Math.floor((count/25)*100);
+        this.reactions_score.content = this.reactionScore + "%";
+    },
+
+    set_up_arrays: function(array) {
+        for (var i = 1; i < 21; i++) {
+            if(i % 5 == 0){
+                array.push(0);
+            }
+            array.push(1);
+        };
+        console.log(array);
+    },
+
     shape_off: function(object) {
         this.shapeReactable = false;
-        this.reactionScore = Math.floor(this.reactions/this.totalReactions*100);
-        this.reactions_score.content = this.reactionScore + "%";
+        this.update_reactions_score();
         if(object.exists){
+            this.reaction_score_array.push(0);
             object.destroy();
         }
     }
