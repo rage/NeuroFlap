@@ -31,13 +31,10 @@ var play_state = {
 
         this.hitShield = false;
 
-        // No 'this.score', but just 'score'
-        this.reaction_score_array = new Array();
-        this.set_up_array(this.reaction_score_array);
-        this.reactions_score = 80;
-        this.flying_score_array = new Array();
-        this.set_up_array(this.flying_score_array);
-        this.flying_score = 80;
+        this.flying_level = 10;
+        this.reaction_level = 10;
+        this.check_scores_counter = 0;
+        this.reset_scores();
         var style = { font: "30px Arial", fill: "#ffffff" };
         this.flying_label = this.game.add.text(20, 20, "80%", style);
         this.reactions_label = this.game.add.text(330, 20, "80%", style); 
@@ -59,10 +56,10 @@ var play_state = {
         }
 
         if(this.left_key.isDown){
-            this.bird.body.velocity.x -= 20;
+            this.bird.body.velocity.x -= 5 + this.flying_level * 1.5;
         }
         if(this.right_key.isDown){
-            this.bird.body.velocity.x += 20;
+            this.bird.body.velocity.x += 5 + this.flying_level * 1.5;
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
@@ -79,7 +76,8 @@ var play_state = {
                 this.reaction_score_array.push(0);
             }
             this.shapeReactable = false;
-            this.reactions_score = this.update_score_label(this.reaction_score_array, this.reactions_label);
+            this.reactions_score = this.calculate_score(this.reaction_score_array);
+            this.reactions_label.content = this.reaction_level;
             this.text.destroy();
         }
     },
@@ -109,16 +107,24 @@ var play_state = {
     add_one_pipe: function(x, y) {
         var pipe = this.pipes.getFirstDead();
         pipe.reset(x, y);
-        pipe.body.velocity.y = 100 + 200 * (this.flying_score/100);
-        console.log(this.flying_score/100); 
+        pipe.body.velocity.y = 150 + 15 * this.flying_level;
         pipe.outOfBoundsKill = true;
     },
 
     add_row_of_pipes: function() {
-        var hole = Math.floor(Math.random()*5)+1;
+        var hole = this.last_hole;
+        while(hole == this.last_hole){
+            hole = Math.floor(Math.random()*5)+1;
+        }
+        this.last_hole = hole;
+        this.check_scores_counter++;
+        if(this.check_scores_counter >= 15){
+            this.check_scores();
+        }
+        console.log(hole);
 
-        this.timer.delay = 1100 + 1000 * (1-(this.flying_score/100));
-        console.log(1100 + 1000 * (1-(this.flying_score/100)));
+        this.timer.delay = 1100 - 10 * this.flying_level;
+        //console.log(1100 + 1000 * (1-(this.flying_score/100)));
 
         for (var i = 0; i < 8; i++){
             if (i != hole && i != hole +1) {
@@ -127,18 +133,19 @@ var play_state = {
         }
         this.flying_score_array.push(1);
         
-        this.flying_score = this.update_score_label(this.flying_score_array, this.flying_label);
+        this.flying_score = this.calculate_score(this.flying_score_array);
+        this.flying_label.content = this.flying_level;
     },
 
     new_shape: function() {
         this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, Object.keys(this.shapes)[Math.floor(Math.random()*Object.keys(this.shapes).length)]);
         this.shapeReactable = true;
-        console.log(500 + 1000 * (1-(this.reactions_score/100)));
-        this.shapeTimer.delay = 1250 + 500 + 1000 * (1-(this.reactions_score/100));
-        this.game.time.events.add(500 + 1000 * (1-(this.reactions_score/100)),this.shape_off,this,this.text);
+        //console.log(500 + 1000 * (1-(this.reactions_score/100)));
+        this.shapeTimer.delay = 1250 + Math.random() * 1000 + (800 - this.reaction_level * 10);
+        this.game.time.events.add(800 - this.reaction_level * 10,this.shape_off,this,this.text);
     },
 
-    update_score_label: function(array, label) {
+    calculate_score: function(array) {
         var array_start = array.length - 25;
         if(array_start < 0){
             array_start = 0;
@@ -149,7 +156,6 @@ var play_state = {
         };
 
         var score = Math.floor((count/25)*100);
-        label.content = score + "%";
         return score;
     },
 
@@ -163,9 +169,29 @@ var play_state = {
         console.log(array);
     },
 
+    check_scores: function() {
+        this.flying_level += (this.flying_score - 80)/4;
+        this.reaction_level += (this.reactions_score - 80)/4;
+        console.log("Flying level:" + this.flying_level);
+        console.log("Reactions level:" + this.reaction_level);
+        this.check_scores_counter = 0;
+
+        this.reset_scores();
+    },
+
+    reset_scores: function(){
+        this.reaction_score_array = new Array();
+        this.set_up_array(this.reaction_score_array);
+        this.reactions_score = 80;
+        this.flying_score_array = new Array();
+        this.set_up_array(this.flying_score_array);
+        this.flying_score = 80;
+    },
+
     shape_off: function(object) {
         this.shapeReactable = false;
-        this.reactions_score = this.update_score_label(this.reaction_score_array, this.reactions_label);
+        this.reactions_score = this.calculate_score(this.reaction_score_array);
+        this.reactions_label.content = this.reaction_level;
         if(object.exists){
             this.reaction_score_array.push(0);
             object.destroy();
