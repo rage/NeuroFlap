@@ -4,6 +4,9 @@ var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game_div');
 // Our 'score' global variable
 var score = 0.0;
 
+var right_shape;
+var right_color;
+
 // Define all the states
 game.state.add('load', load_state);  
 game.state.add('menu', menu_state);  

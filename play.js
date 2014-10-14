@@ -3,18 +3,10 @@ var play_state = {
     // No more 'preload' function, since it is already done in the 'load' state
 
     create: function() { 
-        var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACE);
+        var up_key = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
         this.left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        var key1 = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE);
-        var key2 = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO);
-        var key3 = this.game.input.keyboard.addKey(Phaser.Keyboard.THREE);
-        var key4 = this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR);
-        key1.onDown.add(this.react, this, key1);
-        key2.onDown.add(this.react, this, key2);
-        key3.onDown.add(this.react, this, key3);
-        key4.onDown.add(this.react, this, key4);
-        space_key.onDown.add(function(){},this);
+        up_key.onDown.add(this.react,this);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(30, 'pipe');  
@@ -27,7 +19,13 @@ var play_state = {
         this.bird.body.gravity.y = 0; 
         this.bird.anchor.setTo(0.5, 0.5);
 
-        this.shapes = {'Circle': key1.keyCode, 'Triangle': key2.keyCode, 'Square': key3.keyCode, 'Pentagram': key4.keyCode}; 
+        this.shapes = ['Circle', 'Triangle', 'Pentagram'];
+        var red = { font: "30px Arial", fill: "#ff0000" };
+        var green = { font: "30px Arial", fill: "#00ff00" };
+        var yellow = { font: "30px Arial", fill: "#ffff00" };
+        this.styles = {'Red':red, 'Green':green};
+        //this.shapes = {'Circle': key1.keyCode, 'Triangle': key2.keyCode, 'Square': key3.keyCode, 'Pentagram': key4.keyCode};
+        console.log("The shape is:" + right_shape);
 
         this.hitShield = false;
 
@@ -67,12 +65,14 @@ var play_state = {
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
     },
 
-    react: function(key) {
+    react: function() {
         if(this.text.exists && this.shapeReactable){
-            if(this.shapes[this.text.text] == key.keyCode){
+            if(this.text.text == right_shape && this.styleName == right_color){
+                console.log("RIGHT");
                 this.reactions++;    
                 this.reaction_score_array.push(1);    
             } else {
+                console.log("WRONG");
                 this.reaction_score_array.push(0);
             }
             this.shapeReactable = false;
@@ -138,7 +138,8 @@ var play_state = {
     },
 
     new_shape: function() {
-        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, Object.keys(this.shapes)[Math.floor(Math.random()*Object.keys(this.shapes).length)]);
+        this.styleName = Object.keys(this.styles)[Math.floor(Math.random()*Object.keys(this.styles).length)];
+        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)], this.styles[this.styleName]);
         this.shapeReactable = true;
         //console.log(500 + 1000 * (1-(this.reactions_score/100)));
         this.shapeTimer.delay = 1250 + Math.random() * 1000 + (800 - this.reaction_level * 10);
@@ -193,7 +194,13 @@ var play_state = {
         this.reactions_score = this.calculate_score(this.reaction_score_array);
         this.reactions_label.content = this.reaction_level;
         if(object.exists){
-            this.reaction_score_array.push(0);
+            if(this.text.text == right_shape && this.styleName == right_color){
+                console.log("IGNORED WRONG");
+                this.reaction_score_array.push(0);    
+            } else {
+                console.log("IGNORED RIGHT!");
+                this.reaction_score_array.push(1);
+            }
             object.destroy();
         }
     }
