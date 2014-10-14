@@ -3,10 +3,12 @@ var play_state = {
     // No more 'preload' function, since it is already done in the 'load' state
 
     create: function() { 
-        var up_key = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        var w_key = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        var s_key = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
         this.left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        up_key.onDown.add(this.react,this);
+        w_key.onDown.add(this.react_true,this);
+        s_key.onDown.add(this.react_false,this);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(30, 'pipe');  
@@ -54,10 +56,10 @@ var play_state = {
         }
 
         if(this.left_key.isDown){
-            this.bird.body.velocity.x -= 5 + this.flying_level * 1.5;
+            this.bird.body.velocity.x -= 10 + this.flying_level;
         }
         if(this.right_key.isDown){
-            this.bird.body.velocity.x += 5 + this.flying_level * 1.5;
+            this.bird.body.velocity.x += 10 + this.flying_level;
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
@@ -65,12 +67,26 @@ var play_state = {
         this.game.physics.overlap(this.bird, this.pipes, this.hit_pipe, null, this);      
     },
 
-    react: function() {
+    react_true: function(){
+        this.react(true);
+    },
+
+    react_false: function(){
+        this.react(false);
+    },
+
+    react: function(approved) {
+        console.log("Shape combo" + this.text.text + this.styleName);
+        console.log("target" + right_shape + right_color);
+        console.log("Reverse of player input: " + !approved);
+        console.log(approved);
         if(this.text.exists && this.shapeReactable){
-            if(this.text.text == right_shape && this.styleName == right_color){
-                console.log("RIGHT");
-                this.reactions++;    
+            if((this.text.text == right_shape && this.styleName == right_color) && approved){
+                console.log("RIGHT RIGHT THING");
                 this.reaction_score_array.push(1);    
+            } else if((this.text.text != right_shape || this.styleName != right_color) && !approved) {
+                console.log("RIGHT WRONG THING");
+                this.reaction_score_array.push(1);
             } else {
                 console.log("WRONG");
                 this.reaction_score_array.push(0);
@@ -142,8 +158,8 @@ var play_state = {
         this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)], this.styles[this.styleName]);
         this.shapeReactable = true;
         //console.log(500 + 1000 * (1-(this.reactions_score/100)));
-        this.shapeTimer.delay = 1250 + Math.random() * 1000 + (800 - this.reaction_level * 10);
-        this.game.time.events.add(800 - this.reaction_level * 10,this.shape_off,this,this.text);
+        this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - this.reaction_level * 15);
+        this.game.time.events.add(800 - this.reaction_level * 15,this.shape_off,this,this.text);
     },
 
     calculate_score: function(array) {
@@ -194,13 +210,8 @@ var play_state = {
         this.reactions_score = this.calculate_score(this.reaction_score_array);
         this.reactions_label.content = this.reaction_level;
         if(object.exists){
-            if(this.text.text == right_shape && this.styleName == right_color){
-                console.log("IGNORED WRONG");
-                this.reaction_score_array.push(0);    
-            } else {
-                console.log("IGNORED RIGHT!");
-                this.reaction_score_array.push(1);
-            }
+            console.log("MISSED!");
+            this.reaction_score_array.push(0);
             object.destroy();
         }
     }
