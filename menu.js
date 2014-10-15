@@ -12,6 +12,15 @@ var menu_state = {
         var text = this.game.add.text(x, y-50, "Press space to start", style);
         text.anchor.setTo(0.5, 0.5); 
 
+        var shapes = ['Circle', 'Triangle', 'Pentagram'];
+        right_shape = shapes[Math.floor(Math.random()*shapes.length)];
+
+        var colorNames = ["Red", "Green"];
+        right_color = colorNames[Math.floor(Math.random()*colorNames.length)];
+
+        var shape_text = this.game.add.text(x-185, y, "React to " + right_color + " " + right_shape + "s", style);
+        text.anchor.setTo(0.5, 0.5); 
+
         // If the user already played
         if (score > 0) {
             // Display its score
