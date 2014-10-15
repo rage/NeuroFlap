@@ -12,7 +12,7 @@ var menu_state = {
         var text = this.game.add.text(x, y-50, "Press space to start", style);
         text.anchor.setTo(0.5, 0.5); 
 
-        var shapes = ['Circle', 'Triangle', 'Pentagram'];
+        var shapes = ['Circle', 'Triangle', 'Pentagon'];
         right_shape = shapes[Math.floor(Math.random()*shapes.length)];
 
         var colorNames = ["Red", "Green"];

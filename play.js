@@ -21,11 +21,13 @@ var play_state = {
         this.bird.body.gravity.y = 0; 
         this.bird.anchor.setTo(0.5, 0.5);
 
-        this.shapes = ['Circle', 'Triangle', 'Pentagram'];
+        this.shapes = ['Circle', 'Triangle', 'Pentagon'];
         var red = { font: "30px Arial", fill: "#ff0000" };
         var green = { font: "30px Arial", fill: "#00ff00" };
         var yellow = { font: "30px Arial", fill: "#ffff00" };
         this.styles = {'Red':red, 'Green':green};
+
+        // green: 057c1a red: a30909
         //this.shapes = {'Circle': key1.keyCode, 'Triangle': key2.keyCode, 'Square': key3.keyCode, 'Pentagram': key4.keyCode};
         console.log("The shape is:" + right_shape);
 
@@ -51,8 +53,8 @@ var play_state = {
             this.bird.angle--;
         }
 
-        if(this.text){
-            this.text.x = this.bird.x;   
+        if(this.realShape){
+            this.realShape.x = this.bird.x - 12;   
         }
 
         if(this.left_key.isDown){
@@ -80,11 +82,11 @@ var play_state = {
         console.log("target" + right_shape + right_color);
         console.log("Reverse of player input: " + !approved);
         console.log(approved);
-        if(this.text.exists && this.shapeReactable){
-            if((this.text.text == right_shape && this.styleName == right_color) && approved){
+        if(this.realShape.exists && this.shapeReactable){
+            if((this.text == right_shape && this.styleName == right_color) && approved){
                 console.log("RIGHT RIGHT THING");
                 this.reaction_score_array.push(1);    
-            } else if((this.text.text != right_shape || this.styleName != right_color) && !approved) {
+            } else if((this.text != right_shape || this.styleName != right_color) && !approved) {
                 console.log("RIGHT WRONG THING");
                 this.reaction_score_array.push(1);
             } else {
@@ -94,7 +96,7 @@ var play_state = {
             this.shapeReactable = false;
             this.reactions_score = this.calculate_score(this.reaction_score_array);
             this.reactions_label.content = this.reaction_level;
-            this.text.destroy();
+            this.realShape.destroy();
         }
     },
 
@@ -156,11 +158,12 @@ var play_state = {
 
     new_shape: function() {
         this.styleName = Object.keys(this.styles)[Math.floor(Math.random()*Object.keys(this.styles).length)];
-        this.text = this.game.add.text(this.bird.body.x, this.bird.body.y - 20, this.shapes[Math.floor(Math.random()*this.shapes.length)], this.styles[this.styleName]);
+        this.text = this.shapes[Math.floor(Math.random()*this.shapes.length)];
+        this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.styleName + "-" + this.text);
         this.shapeReactable = true;
         //console.log(500 + 1000 * (1-(this.reactions_score/100)));
         this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - this.reaction_level * 15);
-        this.game.time.events.add(800 - this.reaction_level * 15,this.shape_off,this,this.text);
+        this.game.time.events.add(800 - this.reaction_level * 15,this.shape_off,this,this.realShape);
     },
 
     calculate_score: function(array) {
