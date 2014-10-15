@@ -56,10 +56,10 @@ var play_state = {
         }
 
         if(this.left_key.isDown){
-            this.bird.body.velocity.x -= 10 + this.flying_level;
+            this.bird.body.velocity.x -= 10 + Math.max(10,this.flying_level);
         }
         if(this.right_key.isDown){
-            this.bird.body.velocity.x += 10 + this.flying_level;
+            this.bird.body.velocity.x += 10 + Math.max(10,this.flying_level);
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
@@ -103,6 +103,7 @@ var play_state = {
             return;
         if(!this.hitShield){
             this.flying_score_array.push(0);
+            this.flying_score_array.push(0);
             this.hitShield = true;
             this.game.time.events.add(500,this.hit_shield_off, this);
         }
@@ -123,7 +124,7 @@ var play_state = {
     add_one_pipe: function(x, y) {
         var pipe = this.pipes.getFirstDead();
         pipe.reset(x, y);
-        pipe.body.velocity.y = 150 + 15 * this.flying_level;
+        pipe.body.velocity.y = 150 + 15 * Math.max(5 , this.flying_level);
         pipe.outOfBoundsKill = true;
     },
 
@@ -139,7 +140,7 @@ var play_state = {
         }
         console.log(hole);
 
-        this.timer.delay = 1100 - 10 * this.flying_level;
+        this.timer.delay = 1500 - 20 * this.flying_level;
         //console.log(1100 + 1000 * (1-(this.flying_score/100)));
 
         for (var i = 0; i < 8; i++){
