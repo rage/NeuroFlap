@@ -1,4 +1,4 @@
-var load_state = {  
+var loadState = {  
     preload: function() { 
         this.game.stage.backgroundColor = '#71c5cf';
         this.game.load.image('bird', 'assets/bird.png');  

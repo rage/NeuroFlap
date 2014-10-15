@@ -1,8 +1,8 @@
-var menu_state = {  
+var menuState = {  
     create: function() {
         // Call the 'start' function when pressing the spacebar
-        var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        space_key.onDown.add(this.start, this); 
+        var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spaceKey.onDown.add(this.start, this); 
 
         // Defining variables
         var style = { font: "30px Arial", fill: "#ffffff" };
@@ -13,19 +13,19 @@ var menu_state = {
         text.anchor.setTo(0.5, 0.5); 
 
         var shapes = ['Circle', 'Triangle', 'Pentagon'];
-        right_shape = shapes[Math.floor(Math.random()*shapes.length)];
+        rightShape = shapes[Math.floor(Math.random()*shapes.length)];
 
         var colorNames = ["Red", "Green"];
-        right_color = colorNames[Math.floor(Math.random()*colorNames.length)];
+        rightColor = colorNames[Math.floor(Math.random()*colorNames.length)];
 
-        var shape_text = this.game.add.text(x-185, y, "React to " + right_color + " " + right_shape + "s", style);
+        var shapeText = this.game.add.text(x-185, y, "React to " + rightColor + " " + rightShape + "s", style);
         text.anchor.setTo(0.5, 0.5); 
 
         // If the user already played
         if (score > 0) {
             // Display its score
-            var score_label = this.game.add.text(x, y+50, "score: " + score, style);
-            score_label.anchor.setTo(0.5, 0.5); 
+            var scoreLabel = this.game.add.text(x, y+50, "score: " + score, style);
+            scoreLabel.anchor.setTo(0.5, 0.5); 
         }
     },
 
