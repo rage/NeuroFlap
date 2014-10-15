@@ -20,13 +20,6 @@ var menuState = {
 
         var shapeText = this.game.add.text(x-185, y, "React to " + rightColor + " " + rightShape + "s", style);
         text.anchor.setTo(0.5, 0.5); 
-
-        // If the user already played
-        if (score > 0) {
-            // Display its score
-            var scoreLabel = this.game.add.text(x, y+50, "score: " + score, style);
-            scoreLabel.anchor.setTo(0.5, 0.5); 
-        }
     },
 
     // Start the actual game
