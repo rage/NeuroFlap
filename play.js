@@ -7,8 +7,15 @@ var play_state = {
         var s_key = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
         this.left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        this.a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.d_key = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+        var up_key = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        var down_key = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+
         w_key.onDown.add(this.react_true,this);
         s_key.onDown.add(this.react_false,this);
+        up_key.onDown.add(this.react_true,this);
+        down_key.onDown.add(this.react_false,this);
 
         this.pipes = game.add.group();
         this.pipes.createMultiple(30, 'pipe');  
@@ -57,10 +64,10 @@ var play_state = {
             this.realShape.x = this.bird.x - 12;   
         }
 
-        if(this.left_key.isDown){
+        if(this.left_key.isDown || this.a_key.isDown){
             this.bird.body.velocity.x -= 10 + Math.max(10,this.flying_level);
         }
-        if(this.right_key.isDown){
+        if(this.right_key.isDown || this.d_key.isDown){
             this.bird.body.velocity.x += 10 + Math.max(10,this.flying_level);
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
@@ -85,13 +92,13 @@ var play_state = {
         if(this.realShape.exists && this.shapeReactable){
             if((this.text == right_shape && this.styleName == right_color) && approved){
                 console.log("RIGHT RIGHT THING");
-                this.reaction_score_array.push(1);    
+                this.reaction_score_array.push(2);    
             } else if((this.text != right_shape || this.styleName != right_color) && !approved) {
                 console.log("RIGHT WRONG THING");
                 this.reaction_score_array.push(1);
             } else {
                 console.log("WRONG");
-                this.reaction_score_array.push(0);
+                this.reaction_score_array.push(-1);
             }
             this.shapeReactable = false;
             this.reactions_score = this.calculate_score(this.reaction_score_array);
@@ -104,8 +111,7 @@ var play_state = {
         if (this.bird.alive == false)
             return;
         if(!this.hitShield){
-            this.flying_score_array.push(0);
-            this.flying_score_array.push(0);
+            this.flying_score_array.push(-1);
             this.hitShield = true;
             this.game.time.events.add(500,this.hit_shield_off, this);
         }
