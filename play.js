@@ -8,7 +8,7 @@ var playState = {
         this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
 
         this.bird = this.game.add.sprite(150, 450, 'bird');
-        this.bird.body.gravity.y = 0; 
+        //this.bird.body.gravity.y = 0; 
         this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
@@ -18,9 +18,13 @@ var playState = {
         this.reactionLevel = 10;
         this.checkScoresCounter = 0;
         this.resetScores();
+
+        this.interpolationCounter = 0;
+        //Phaser.Color.hexToColor('71c5cf',this.defaultColor);
+
         var style = { font: "30px Arial", fill: "#ffffff" };
-        this.flyingLabel = this.game.add.text(20, 20, "80%", style);
-        this.reactionsLabel = this.game.add.text(330, 20, "80%", style); 
+        this.flyingLabel = this.game.add.text(20, 20, "10", style);
+        this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
         this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
         this.shapeOn = false;
         this.hitShield = false;
@@ -75,12 +79,15 @@ var playState = {
         if(this.realShape.exists && this.shapeReactable){
             if((this.text == rightShape && this.colorName == rightColor) && approved){
                 console.log("RIGHT RIGHT THING");
+                this.flashBackground('#00FF00');
                 this.reactionScoreArray.push(2);    
             } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
                 console.log("RIGHT WRONG THING");
+                this.flashBackground('#00FF00');
                 this.reactionScoreArray.push(1);
             } else {
                 console.log("WRONG");
+                this.flashBackground('#FF0000');
                 this.reactionScoreArray.push(-1);
             }
             this.shapeReactable = false;
@@ -203,8 +210,18 @@ var playState = {
         this.reactionsLabel.content = this.reactionLevel;
         if(object.exists){
             console.log("MISSED!");
+            this.flashBackground('#FFFF00');
             this.reactionScoreArray.push(0);
             object.destroy();
         }
+    },
+
+    flashBackground: function(color){
+        this.game.stage.backgroundColor = color;
+    },
+
+    resetBackground: function(){
+
+        this.game.stage.backgroundColor = '#71c5cf';
     }
 };
