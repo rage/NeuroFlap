@@ -28,7 +28,7 @@ var playState = {
         this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(60000, this.restartGame, this);
+        this.endTimer = this.game.time.events.add(120000, this.restartGame, this);
     },
 
     buttonSetup: function(){
