@@ -14,6 +14,10 @@ var playState = {
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
         this.colors =['Red','Green'];  // green: 057c1a red: a30909
 
+        this.reactionIndicator = this.game.add.graphics(500,500);
+        this.reactionIndicator.beginFill('#00FF00',1);
+        this.reactionIndicator.drawRect(100, 100, 400, 100);
+
         flyingLevel = 10;
         reactionLevel = 10;
         this.checkScoresCounter = 0;
@@ -28,7 +32,7 @@ var playState = {
         this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(120000, this.restartGame, this);
+        this.endTimer = this.game.time.events.add(90000, this.restartGame, this);
     },
 
     buttonSetup: function(){
