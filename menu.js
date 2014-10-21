@@ -8,6 +8,15 @@ var menuState = {
         var style = { font: "30px Arial", fill: "#ffffff" };
         var x = game.world.width/2, y = game.world.height/2;
 
+        if(flyingLevel != 0){
+            var flyingScoreText = this.game.add.text(x, y-150, "Flying: " + flyingLevel, style);
+            flyingScoreText.anchor.setTo(0.5,0.5);
+        }
+        if(reactionLevel != 0){
+            var reactionScoreText = this.game.add.text(x, y-100, "Reactions: " + reactionLevel, style);
+            reactionScoreText.anchor.setTo(0.5,0.5);
+        }
+
         // Adding a text centered on the screen
         var text = this.game.add.text(x, y-50, "Press space to start", style);
         text.anchor.setTo(0.5, 0.5); 

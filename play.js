@@ -14,8 +14,8 @@ var playState = {
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
         this.colors =['Red','Green'];  // green: 057c1a red: a30909
 
-        this.flyingLevel = 10;
-        this.reactionLevel = 10;
+        flyingLevel = 10;
+        reactionLevel = 10;
         this.checkScoresCounter = 0;
         this.resetScores();
 
@@ -23,11 +23,12 @@ var playState = {
         //Phaser.Color.hexToColor('71c5cf',this.defaultColor);
 
         var style = { font: "30px Arial", fill: "#ffffff" };
-        this.flyingLabel = this.game.add.text(20, 20, "10", style);
-        this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
+        // this.flyingLabel = this.game.add.text(20, 20, "10", style);
+        // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
         this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
         this.shapeOn = false;
         this.hitShield = false;
+        this.endTimer = this.game.time.events.add(60000, this.restartGame, this);
     },
 
     buttonSetup: function(){
@@ -54,10 +55,10 @@ var playState = {
             this.realShape.x = this.bird.x - 12;   
         }
         if(this.leftKey.isDown || this.aKey.isDown){
-            this.bird.body.velocity.x -= 10 + Math.max(10,this.flyingLevel);
+            this.bird.body.velocity.x -= 10 + Math.max(10,flyingLevel);
         }
         if(this.rightKey.isDown || this.dKey.isDown){
-            this.bird.body.velocity.x += 10 + Math.max(10,this.flyingLevel);
+            this.bird.body.velocity.x += 10 + Math.max(10,flyingLevel);
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
@@ -92,7 +93,7 @@ var playState = {
             }
             this.shapeReactable = false;
             this.reactionsScore = this.calculateScore(this.reactionScoreArray);
-            this.reactionsLabel.content = this.reactionLevel;
+            // this.reactionsLabel.content = reactionLevel;
             this.realShape.destroy();
         }
     },
@@ -121,7 +122,7 @@ var playState = {
     addOnePipe: function(x, y) {
         var pipe = this.pipes.getFirstDead();
         pipe.reset(x, y);
-        pipe.body.velocity.y = 150 + 15 * Math.max(5 , this.flyingLevel);
+        pipe.body.velocity.y = 150 + 15 * Math.max(5 , flyingLevel);
         pipe.outOfBoundsKill = true;
     },
 
@@ -144,12 +145,12 @@ var playState = {
         if(this.checkScoresCounter >= 15){
             this.checkScores();
         }
-        this.timer.delay = 1500 - 20 * this.flyingLevel;
+        this.timer.delay = 1500 - 20 * flyingLevel;
 
         this.flyingScoreArray.push(1);
         
         this.flyingScore = this.calculateScore(this.flyingScoreArray);
-        this.flyingLabel.content = this.flyingLevel;
+        // this.flyingLabel.content = flyingLevel;
     },
 
     randomItem: function(array) {
@@ -161,8 +162,8 @@ var playState = {
         this.text = this.randomItem(this.shapes);
         this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.colorName + "-" + this.text);
         this.shapeReactable = true;
-        this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - this.reactionLevel * 15);
-        this.game.time.events.add(800 - this.reactionLevel * 15,this.shapeOff,this,this.realShape);
+        this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - reactionLevel * 15);
+        this.game.time.events.add(800 - reactionLevel * 15,this.shapeOff,this,this.realShape);
     },
 
     calculateScore: function(array) {
@@ -178,8 +179,8 @@ var playState = {
     },
 
     checkScores: function() {
-        this.flyingLevel += (this.flyingScore - 80)/4;
-        this.reactionLevel += (this.reactionsScore - 80)/4;
+        flyingLevel += (this.flyingScore - 80)/4;
+        reactionLevel += (this.reactionsScore - 80)/4;
         this.checkScoresCounter = 0;
 
         this.resetScores();
@@ -207,7 +208,7 @@ var playState = {
     shapeOff: function(object) {
         this.shapeReactable = false;
         this.reactionsScore = this.calculateScore(this.reactionScoreArray);
-        this.reactionsLabel.content = this.reactionLevel;
+        // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
             console.log("MISSED!");
             this.flashBackground('#FFFF00');
