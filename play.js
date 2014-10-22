@@ -69,10 +69,6 @@ var playState = {
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
 
-        console.log(loggingFlyingMap);
-        console.log(loggingReactionMap);
-        console.log(loggingLevelMap);
-
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
     },
 
@@ -89,16 +85,12 @@ var playState = {
     },
 
     react: function(approved) {
-        console.log("Shape combo" + this.text + this.colorName);
-        console.log("target" + rightShape + rightColor);
         if(this.realShape.exists && this.shapeReactable){
             if((this.text == rightShape && this.colorName == rightColor) && approved){
-                console.log("RIGHT RIGHT THING");
                 loggingReactionMap[this.getTimeNow()] = "Approved correctly";
                 this.flashBackground('#00FF00');
                 this.reactionScoreArray.push(2);    
             } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
-                console.log("RIGHT WRONG THING");
                 loggingReactionMap[this.getTimeNow()] = "Disapproved correctly";
                 this.flashBackground('#00FF00');
                 this.reactionScoreArray.push(1);
@@ -108,7 +100,6 @@ var playState = {
                 } else {
                     loggingReactionMap[this.getTimeNow()] = "Disapproved incorrectly"; 
                 }
-                console.log("WRONG");
                 this.flashBackground('#FF0000');
                 this.reactionScoreArray.push(-1);
             }
@@ -211,6 +202,10 @@ var playState = {
 
         this.resetScores();
         loggingLevelMap[this.getTimeNow()] = "Reactions: " + reactionLevel; 
+        
+        console.log(loggingFlyingMap);
+        console.log(loggingReactionMap);
+        console.log(loggingLevelMap);
     },
 
     resetScores: function(){
