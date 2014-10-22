@@ -59,15 +59,25 @@ var playState = {
             this.realShape.x = this.bird.x - 12;   
         }
         if(this.leftKey.isDown || this.aKey.isDown){
+            loggingFlyingMap[this.getTimeNow()] = "Left";
             this.bird.body.velocity.x -= 10 + Math.max(10,flyingLevel);
         }
         if(this.rightKey.isDown || this.dKey.isDown){
+            loggingFlyingMap[this.getTimeNow()] = "Right";
             this.bird.body.velocity.x += 10 + Math.max(10,flyingLevel);
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
 
+        console.log(loggingFlyingMap);
+        console.log(loggingReactionMap);
+        console.log(loggingLevelMap);
+
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
+    },
+
+    getTimeNow: function(){
+        return Date.now();
     },
 
     reactTrue: function(){
@@ -84,13 +94,20 @@ var playState = {
         if(this.realShape.exists && this.shapeReactable){
             if((this.text == rightShape && this.colorName == rightColor) && approved){
                 console.log("RIGHT RIGHT THING");
+                loggingReactionMap[this.getTimeNow()] = "Approved correctly";
                 this.flashBackground('#00FF00');
                 this.reactionScoreArray.push(2);    
             } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
                 console.log("RIGHT WRONG THING");
+                loggingReactionMap[this.getTimeNow()] = "Disapproved correctly";
                 this.flashBackground('#00FF00');
                 this.reactionScoreArray.push(1);
             } else {
+                if(approved){
+                    loggingReactionMap[this.getTimeNow()] = "Approved incorrectly";    
+                } else {
+                    loggingReactionMap[this.getTimeNow()] = "Disapproved incorrectly"; 
+                }
                 console.log("WRONG");
                 this.flashBackground('#FF0000');
                 this.reactionScoreArray.push(-1);
@@ -110,6 +127,7 @@ var playState = {
             this.hitShield = true;
             this.game.time.events.add(500,this.hitShieldOff, this);
         }
+        loggingFlyingMap[this.getTimeNow()] = "Hit obstacle";
     },
 
     hitShieldOff: function() {
@@ -142,6 +160,7 @@ var playState = {
             }
         }
         this.flyingUpkeep();
+        loggingFlyingMap[this.getTimeNow()] = "New obstacle";
     },
 
     flyingUpkeep: function() {
@@ -168,6 +187,7 @@ var playState = {
         this.shapeReactable = true;
         this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - reactionLevel * 15);
         this.game.time.events.add(800 - reactionLevel * 15,this.shapeOff,this,this.realShape);
+        loggingReactionMap[this.getTimeNow()] = "Shape Visible"; 
     },
 
     calculateScore: function(array) {
@@ -185,9 +205,12 @@ var playState = {
     checkScores: function() {
         flyingLevel += (this.flyingScore - 80)/4;
         reactionLevel += (this.reactionsScore - 80)/4;
+        loggingLevelMap[this.getTimeNow()] = "Flying: " + flyingLevel;
+
         this.checkScoresCounter = 0;
 
         this.resetScores();
+        loggingLevelMap[this.getTimeNow()] = "Reactions: " + reactionLevel; 
     },
 
     resetScores: function(){
@@ -217,6 +240,7 @@ var playState = {
             console.log("MISSED!");
             this.flashBackground('#FFFF00');
             this.reactionScoreArray.push(0);
+            loggingReactionMap[this.getTimeNow()] = "Shape Missed"; 
             object.destroy();
         }
     },
