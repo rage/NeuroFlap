@@ -93,7 +93,7 @@ var playState = {
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
 
-        console.log(loggingArray);
+        //console.log(loggingArray);
 
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
     },
@@ -114,25 +114,25 @@ var playState = {
         if(this.realShape.exists && this.shapeReactable){
             if((this.text == rightShape && this.colorName == rightColor) && approved){
                 this.addToLog("Approved correctly");
-                this.flashBackground('#00FF00');
-                this.reactionScoreArray.push(2);    
+                this.flashBackground('#71c5cf');
+                this.reactionsScore += 2;    
             } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
                 this.addToLog("Disapproved correctly");
-                this.flashBackground('#00FF00');
-                this.reactionScoreArray.push(1);
+                this.flashBackground('#71c5cf');
+                this.reactionsScore += 1;
             } else {
                 if(approved){
                     this.addToLog("Approved incorrectly");    
                 } else {
                     this.addToLog("Disapproved incorrectly"); 
                 }
-                this.flashBackground('#FF0000');
-                this.reactionScoreArray.push(-1);
+                this.gradientFromRed();
+                this.reactionsScore -= 1;
             }
             this.shapeReactable = false;
-            this.reactionsScore = this.calculateScore(this.reactionScoreArray);
             // this.reactionsLabel.content = reactionLevel;
             this.realShape.destroy();
+            console.log(this.reactionsScore);
         }
     },
 
@@ -141,7 +141,7 @@ var playState = {
             return;
         if(!this.hitShield){
             this.addToLog("Hit obstacle");
-            this.flyingScoreArray.push(-1);
+            this.flyingScore -= 2;
             this.hitShield = true;
             this.game.time.events.add(500,this.hitShieldOff, this);
         }
@@ -187,10 +187,7 @@ var playState = {
         }
         this.timer.delay = 1500 - 20 * flyingLevel;
 
-        this.flyingScoreArray.push(1);
-        
-        this.flyingScore = this.calculateScore(this.flyingScoreArray);
-        // this.flyingLabel.content = flyingLevel;
+        this.flyingScore += 1;
     },
 
     randomItem: function(array) {
@@ -207,18 +204,6 @@ var playState = {
         this.addToLog("Shape Visible"); 
     },
 
-    calculateScore: function(array) {
-        var arrayStart = array.length - 25;
-        if(arrayStart < 0){
-            arrayStart = 0;
-        }
-        var count = 0;
-        for (var i = arrayStart; i < array.length; i++) {
-            count += array[i];
-        };
-        return Math.floor((count/25)*100);
-    },
-
     checkScores: function() {
         flyingLevel += (this.flyingScore - 80)/4;
         reactionLevel += (this.reactionsScore - 80)/4;
@@ -231,32 +216,17 @@ var playState = {
     },
 
     resetScores: function(){
-        this.reactionScoreArray = new Array();
-        this.setUpArray(this.reactionScoreArray);
         this.reactionsScore = 80;
-        this.flyingScoreArray = new Array();
-        this.setUpArray(this.flyingScoreArray);
         this.flyingScore = 80;
-    },
-
-    setUpArray: function(array) {
-        for (var i = 1; i < 21; i++) {
-            if(i % 5 == 0){
-                array.push(0);
-            }
-            array.push(1);
-        };
-        console.log(array);
     },
 
     shapeOff: function(object) {
         this.shapeReactable = false;
-        this.reactionsScore = this.calculateScore(this.reactionScoreArray);
         // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
             console.log("MISSED!");
-            this.flashBackground('#FFFF00');
-            this.reactionScoreArray.push(0);
+            this.gradientFromYellow();
+            this.reactionsScore += 0;
             this.addToLog("Shape Missed"); 
             object.destroy();
         }
@@ -264,6 +234,26 @@ var playState = {
 
     flashBackground: function(color){
         this.game.stage.backgroundColor = color;
+    },
+
+    gradientFromRed: function(){
+        this.gradientIndex = 0;
+        this.gradientTimer = this.game.time.events.loop(30, this.progressGradient, this);
+        this.gradientColor = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
+    },
+
+    gradientFromYellow: function(){
+        this.gradientIndex = 0;
+        this.gradientTimer = this.game.time.events.loop(30, this.progressGradient, this);
+        this.gradientColor = ['#FFFF00', '#F0F914', '#E2F329', '#D4ED3E', '#C6E752', '#B8E267', '#A9DC7C', '#9BD690', '#8DD0A5', '#7FCABA', '#71C5CF'];
+    },
+
+    progressGradient: function(){
+        this.game.stage.backgroundColor = this.gradientColor[this.gradientIndex];
+        this.gradientIndex++;
+        if(this.gradientIndex > 10){
+            this.game.time.events.remove(this.gradientTimer);
+        }
     },
 
     resetBackground: function(){
