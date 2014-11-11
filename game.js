@@ -5,9 +5,7 @@ var rightShape;
 var rightColor;
 var flyingLevel = 0;
 var reactionLevel = 0;
-var loggingFlyingMap = {};
-var loggingReactionMap = {};
-var loggingLevelMap = {};
+var loggingArray = [];
 
 // Define all the states
 game.state.add('load', loadState);  
