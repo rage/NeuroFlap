@@ -13,6 +13,9 @@ var playState = {
 
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
         this.colors =['Red','Green'];  // green: 057c1a red: a30909
+        this.redGradient = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
+        this.yellowGradient = ['#FFFF00', '#F0F914', '#E2F329', '#D4ED3E', '#C6E752', '#B8E267', '#A9DC7C', '#9BD690', '#8DD0A5', '#7FCABA', '#71C5CF'];
+        this.greenGradient = ['#00FF00', '#0BF914', '#16F329', '#21ED3E', '#2DE752', '#38E267', '#43DC7C', '#4FD690', '#5AD0A5', '#65CABA', '#71C5CF'];
 
         this.reactionIndicator = this.game.add.graphics(500,500);
         this.reactionIndicator.beginFill('#00FF00',1);
@@ -114,20 +117,20 @@ var playState = {
         if(this.realShape.exists && this.shapeReactable){
             if((this.text == rightShape && this.colorName == rightColor) && approved){
                 this.addToLog("Approved correctly");
-                this.flashBackground('#71c5cf');
-                this.reactionsScore += 2;    
+                this.startGradient(this.greenGradient);
+                this.reactionsScore += 1;    
             } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
                 this.addToLog("Disapproved correctly");
-                this.flashBackground('#71c5cf');
-                this.reactionsScore += 1;
+                this.startGradient(this.greenGradient);
+                this.reactionsScore += 0.5;
             } else {
                 if(approved){
                     this.addToLog("Approved incorrectly");    
                 } else {
                     this.addToLog("Disapproved incorrectly"); 
                 }
-                this.gradientFromRed();
-                this.reactionsScore -= 1;
+                this.startGradient(this.redGradient);
+                this.reactionsScore -= 0.5;
             }
             this.shapeReactable = false;
             // this.reactionsLabel.content = reactionLevel;
@@ -187,7 +190,7 @@ var playState = {
         }
         this.timer.delay = 1500 - 20 * flyingLevel;
 
-        this.flyingScore += 1;
+        this.flyingScore += 0.5;
     },
 
     randomItem: function(array) {
@@ -225,8 +228,8 @@ var playState = {
         // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
             console.log("MISSED!");
-            this.gradientFromYellow();
-            this.reactionsScore += 0;
+            this.startGradient(this.yellowGradient);
+            this.reactionsScore -= 0.5;
             this.addToLog("Shape Missed"); 
             object.destroy();
         }
@@ -236,16 +239,10 @@ var playState = {
         this.game.stage.backgroundColor = color;
     },
 
-    gradientFromRed: function(){
+    startGradient: function(gradient){
         this.gradientIndex = 0;
+        this.gradientColor = gradient;
         this.gradientTimer = this.game.time.events.loop(30, this.progressGradient, this);
-        this.gradientColor = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
-    },
-
-    gradientFromYellow: function(){
-        this.gradientIndex = 0;
-        this.gradientTimer = this.game.time.events.loop(30, this.progressGradient, this);
-        this.gradientColor = ['#FFFF00', '#F0F914', '#E2F329', '#D4ED3E', '#C6E752', '#B8E267', '#A9DC7C', '#9BD690', '#8DD0A5', '#7FCABA', '#71C5CF'];
     },
 
     progressGradient: function(){
