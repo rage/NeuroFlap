@@ -29,7 +29,7 @@ var playState = {
         this.interpolationCounter = 0;
         //Phaser.Color.hexToColor('71c5cf',this.defaultColor);
 
-        this.lineX = 2000;
+        this.lineY = 2000;
         this.lineDestination = 2350;
 
         var style = { font: "30px Arial", fill: "#ffffff" };
@@ -44,8 +44,8 @@ var playState = {
     buttonSetup: function(){
         var wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         var sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
-        var upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        var downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
         this.aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -53,34 +53,35 @@ var playState = {
 
         wKey.onDown.add(this.reactTrue,this);
         sKey.onDown.add(this.reactFalse,this);
-        
-        upKey.onDown.add(this.reactTrue,this);
-        downKey.onDown.add(this.reactFalse,this);
 
-        this.leftKey.onDown.add(this.leftPressed,this);
-        this.rightKey.onDown.add(this.rightPressed,this);
-        this.leftKey.onUp.add(this.leftReleased,this);
-        this.rightKey.onUp.add(this.rightReleased,this);
+        this.leftKey.onDown.add(this.keyPressed,this);
+        this.rightKey.onDown.add(this.keyPressed,this);
+        this.leftKey.onUp.add(this.keyReleased,this);
+        this.rightKey.onUp.add(this.keyReleased,this);
+        this.upKey.onDown.add(this.keyPressed,this);
+        this.downKey.onDown.add(this.keyPressed,this);
+        this.upKey.onUp.add(this.keyReleased,this);
+        this.downKey.onUp.add(this.keyReleased,this);
+
+        this.keyNames = ["Left", "Up", "Right", "Down"];
     },
 
-    leftPressed: function(){
-        this.addToLog("Left Pressed");
+    keyPressed: function(key){
+        // LURD 37-40
+        this.addToLog(this.keyCodeToName(key.keyCode) + " Pressed");
     },
 
-    leftReleased: function(){
-        this.addToLog("Left Released");
+    keyReleased: function(key){
+        this.addToLog(this.keyCodeToName(key.keyCode) + " Released");
     },
 
-    rightPressed: function(){
-        this.addToLog("Right Pressed");
-    },
-
-    rightReleased: function(){
-        this.addToLog("Right Released");
+    keyCodeToName: function(code){
+        return this.keyNames[code - 37];
     },
 
     addToLog: function(event){
         var entry = {time: this.getTimeNow(), event: event};
+        console.log(entry);
         loggingArray.push(entry);
     },
 
@@ -89,7 +90,8 @@ var playState = {
             this.restartGame(); 
         }
         if(this.exists(this.realShape)){
-            this.realShape.x = this.bird.x - 12;   
+            this.realShape.x = this.bird.x - 12;
+            this.realShape.y = this.bird.body.y - 25
         }
         if(this.leftKey.isDown || this.aKey.isDown){
             this.bird.body.velocity.x -= 10 + Math.max(10,flyingLevel);
@@ -97,10 +99,18 @@ var playState = {
         if(this.rightKey.isDown || this.dKey.isDown){
             this.bird.body.velocity.x += 10 + Math.max(10,flyingLevel);
         }
+        if(this.upKey.isDown){
+            this.bird.body.velocity.y -= 5;
+        }
+        if(this.downKey.isDown){
+            this.bird.body.velocity.y += 5;
+        }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
+        this.bird.body.velocity.y = this.bird.body.velocity.y * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
         if(this.exists(this.hitMarker)){
             this.hitMarker.body.x = this.bird.body.x;
+            this.hitMarker.body.y = this.bird.body.y;
             this.hitMarker.angle = this.bird.angle;
         }
 
@@ -112,27 +122,35 @@ var playState = {
     },
 
     newLine: function(){
-        var shape = game.add.graphics(0, 0);  //init rect
-        shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
-        shape.beginFill(0xFFFF0B, 1);
+        console.log("Bird at: " + (this.bird.body.y+20));
+        console.log("Line at: " + this.lineY/5);
 
-        shape.moveTo(0, this.lineX/5); // x, y
-        shape.lineTo(400, this.lineX/5); // x, y        
+        var shape = game.add.graphics(0, 0);  //init rect
+        shape.beginFill(0x00FF0B, 1);
+        
+        if(Math.abs((this.bird.body.y + 20) - this.lineY/5) < 20){
+            shape.lineStyle(2, 0x00FF00, 1); 
+        } else {
+            shape.lineStyle(2, 0xFF0000, 1); 
+        }
+
+        shape.moveTo(0, this.lineY/5); // x, y
+        shape.lineTo(400, this.lineY/5); // x, y        
         this.moveLine();
 
         this.game.time.events.add(1,this.destroyShape, this,shape);
     },
 
     moveLine: function(){
-        if(this.lineX == this.lineDestination){
+        if(this.lineY == this.lineDestination){
             this.newDestination();
         }
-        if(this.lineX < this.lineDestination){
-            this.lineX += 1;
-        } else  if(this.lineX > this.lineDestination){
-            this.lineX -= 1;
+        if(this.lineY < this.lineDestination){
+            this.lineY += 1;
+        } else  if(this.lineY > this.lineDestination){
+            this.lineY -= 1;
         } else {
-            console.log(this.lineX);
+            console.log(this.lineY);
             console.log(this.lineDestination);
             console.log("KABOOM!");
         }
