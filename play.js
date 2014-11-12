@@ -84,7 +84,7 @@ var playState = {
         if (this.bird.inWorld == false){
             this.restartGame(); 
         }
-        if(this.realShape){
+        if(this.exists(this.realShape)){
             this.realShape.x = this.bird.x - 12;   
         }
         if(this.leftKey.isDown || this.aKey.isDown){
@@ -95,10 +95,21 @@ var playState = {
         }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
+        if(this.exists(this.hitMarker)){
+            this.hitMarker.body.x = this.bird.body.x;
+            this.hitMarker.angle = this.bird.angle;
+        }
 
         //console.log(loggingArray);
 
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
+    },
+
+    exists: function(object){
+        if(object != undefined){
+            return object.exists;
+        }
+        return false;
     },
 
     getTimeNow: function(){
@@ -144,6 +155,9 @@ var playState = {
             return;
         if(!this.hitShield){
             this.addToLog("Hit obstacle");
+            this.hitMarker = this.game.add.sprite(this.bird.x, this.bird.y, "hit");
+            this.hitMarker.anchor.setTo(0.5, 0.5);
+            this.hitMarker.angle = this.bird.angle;
             this.flyingScore -= 2;
             this.hitShield = true;
             this.game.time.events.add(500,this.hitShieldOff, this);
@@ -151,6 +165,9 @@ var playState = {
     },
 
     hitShieldOff: function() {
+        if(this.hitMarker.exists){
+            this.hitMarker.destroy();
+        }
         this.hitShield = false;
     },
 
@@ -190,7 +207,7 @@ var playState = {
         }
         this.timer.delay = 1500 - 20 * flyingLevel;
 
-        this.flyingScore += 0.5;
+        this.flyingScore += 1;
     },
 
     randomItem: function(array) {

@@ -3,6 +3,7 @@ var loadState = {
         this.game.stage.backgroundColor = '#71c5cf';
         this.game.load.image('bird', 'assets/bird.png');  
         this.game.load.image('pipe', 'assets/pipe.png');
+        this.game.load.image('hit', 'assets/hit.png');
         this.game.load.image('Green-Circle', 'assets/green-circle.png'); 
         this.game.load.image('Red-Circle', 'assets/red-circle.png');  
         this.game.load.image('Green-Triangle', 'assets/green-triangle.png'); 
