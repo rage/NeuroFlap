@@ -129,11 +129,11 @@ var playState = {
             if((this.text == rightShape && this.colorName == rightColor) && approved){
                 this.addToLog("Approved correctly");
                 this.startGradient(this.greenGradient);
-                this.reactionsScore += 1;    
+                this.reactionsScore += 1.25;    
             } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
                 this.addToLog("Disapproved correctly");
                 this.startGradient(this.greenGradient);
-                this.reactionsScore += 0.5;
+                this.reactionsScore += 0.75;
             } else {
                 if(approved){
                     this.addToLog("Approved incorrectly");    
@@ -141,7 +141,7 @@ var playState = {
                     this.addToLog("Disapproved incorrectly"); 
                 }
                 this.startGradient(this.redGradient);
-                this.reactionsScore -= 0.5;
+                this.reactionsScore -= 0.75;
             }
             this.shapeReactable = false;
             // this.reactionsLabel.content = reactionLevel;
@@ -158,7 +158,7 @@ var playState = {
             this.hitMarker = this.game.add.sprite(this.bird.x, this.bird.y, "hit");
             this.hitMarker.anchor.setTo(0.5, 0.5);
             this.hitMarker.angle = this.bird.angle;
-            this.flyingScore -= 2;
+            this.flyingScore -= 1.5;
             this.hitShield = true;
             this.game.time.events.add(500,this.hitShieldOff, this);
         }
@@ -207,7 +207,7 @@ var playState = {
         }
         this.timer.delay = 1500 - 20 * flyingLevel;
 
-        this.flyingScore += 1;
+        this.flyingScore += 0.75;
     },
 
     randomItem: function(array) {
@@ -259,7 +259,7 @@ var playState = {
     startGradient: function(gradient){
         this.gradientIndex = 0;
         this.gradientColor = gradient;
-        this.gradientTimer = this.game.time.events.loop(30, this.progressGradient, this);
+        this.gradientTimer = this.game.time.events.loop(40, this.progressGradient, this);
     },
 
     progressGradient: function(){
