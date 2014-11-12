@@ -29,6 +29,9 @@ var playState = {
         this.interpolationCounter = 0;
         //Phaser.Color.hexToColor('71c5cf',this.defaultColor);
 
+        this.lineX = 2000;
+        this.lineDestination = 2350;
+
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
         // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
@@ -50,6 +53,7 @@ var playState = {
 
         wKey.onDown.add(this.reactTrue,this);
         sKey.onDown.add(this.reactFalse,this);
+        
         upKey.onDown.add(this.reactTrue,this);
         downKey.onDown.add(this.reactFalse,this);
 
@@ -100,9 +104,47 @@ var playState = {
             this.hitMarker.angle = this.bird.angle;
         }
 
+        this.newLine();
+
         //console.log(loggingArray);
 
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
+    },
+
+    newLine: function(){
+        var shape = game.add.graphics(0, 0);  //init rect
+        shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
+        shape.beginFill(0xFFFF0B, 1);
+
+        shape.moveTo(0, this.lineX/5); // x, y
+        shape.lineTo(400, this.lineX/5); // x, y        
+        this.moveLine();
+
+        this.game.time.events.add(1,this.destroyShape, this,shape);
+    },
+
+    moveLine: function(){
+        if(this.lineX == this.lineDestination){
+            this.newDestination();
+        }
+        if(this.lineX < this.lineDestination){
+            this.lineX += 1;
+        } else  if(this.lineX > this.lineDestination){
+            this.lineX -= 1;
+        } else {
+            console.log(this.lineX);
+            console.log(this.lineDestination);
+            console.log("KABOOM!");
+        }
+    },
+
+    newDestination: function(){
+        this.lineDestination = 1875 + Math.floor((Math.random() * 500));
+    },
+
+    destroyShape: function(shape){
+        console.log("TööT");
+        shape.destroy(true);
     },
 
     exists: function(object){
@@ -125,7 +167,7 @@ var playState = {
     },
 
     react: function(approved) {
-        if(this.realShape.exists && this.shapeReactable){
+        if(this.exists(this.realShape) && this.shapeReactable){
             if((this.text == rightShape && this.colorName == rightColor) && approved){
                 this.addToLog("Approved correctly");
                 this.startGradient(this.greenGradient);
