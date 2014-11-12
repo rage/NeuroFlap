@@ -26,11 +26,9 @@ var playState = {
         this.checkScoresCounter = 0;
         this.resetScores();
 
-        this.interpolationCounter = 0;
-        //Phaser.Color.hexToColor('71c5cf',this.defaultColor);
-
-        this.lineY = 2000;
-        this.lineDestination = 2350;
+        this.lineY = 2300;
+        this.lineDestination = 2000;
+        this.lineStatus = "Green";
 
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
@@ -122,15 +120,20 @@ var playState = {
     },
 
     newLine: function(){
-        console.log("Bird at: " + (this.bird.body.y+20));
-        console.log("Line at: " + this.lineY/5);
-
         var shape = game.add.graphics(0, 0);  //init rect
         shape.beginFill(0x00FF0B, 1);
         
         if(Math.abs((this.bird.body.y + 20) - this.lineY/5) < 20){
-            shape.lineStyle(2, 0x00FF00, 1); 
+            if(this.lineStatus != "Green"){
+                this.lineStatus = "Green";
+                this.addToLog("Line status: Green");
+            }
+            shape.lineStyle(2, 0x00FF00, 1);
         } else {
+            if(this.lineStatus != "Red"){
+                this.lineStatus = "Red";
+                this.addToLog("Line status: Red");
+            }
             shape.lineStyle(2, 0xFF0000, 1); 
         }
 
