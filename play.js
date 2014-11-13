@@ -26,8 +26,8 @@ var playState = {
         this.checkScoresCounter = 0;
         this.resetScores();
 
-        this.lineY = 2300;
-        this.lineDestination = 2000;
+        this.lineY = 460;
+        this.lineDestination = 400;
         this.lineStatus = "Green";
 
         var style = { font: "30px Arial", fill: "#ffffff" };
@@ -79,7 +79,7 @@ var playState = {
 
     addToLog: function(event){
         var entry = {time: this.getTimeNow(), event: event};
-        console.log(entry);
+        //console.log(entry);
         loggingArray.push(entry);
     },
 
@@ -123,7 +123,7 @@ var playState = {
         var shape = game.add.graphics(0, 0);  //init rect
         shape.beginFill(0x00FF0B, 1);
         
-        if(Math.abs((this.bird.body.y + 20) - this.lineY/5) < 20){
+        if(Math.abs((this.bird.body.y + 24) - this.lineY) < 15){
             if(this.lineStatus != "Green"){
                 this.lineStatus = "Green";
                 this.addToLog("Line status: Green");
@@ -137,21 +137,21 @@ var playState = {
             shape.lineStyle(2, 0xFF0000, 1); 
         }
 
-        shape.moveTo(0, this.lineY/5); // x, y
-        shape.lineTo(400, this.lineY/5); // x, y        
+        shape.moveTo(0, this.lineY); // x, y
+        shape.lineTo(400, this.lineY); // x, y        
         this.moveLine();
 
         this.game.time.events.add(1,this.destroyShape, this,shape);
     },
 
     moveLine: function(){
-        if(this.lineY == this.lineDestination){
+        if(this.lineY < this.lineDestination + 1 && this.lineY > this.lineDestination - 1){
             this.newDestination();
         }
         if(this.lineY < this.lineDestination){
-            this.lineY += 1;
+            this.lineY += 0.2;
         } else  if(this.lineY > this.lineDestination){
-            this.lineY -= 1;
+            this.lineY -= 0.2;
         } else {
             console.log(this.lineY);
             console.log(this.lineDestination);
@@ -160,11 +160,10 @@ var playState = {
     },
 
     newDestination: function(){
-        this.lineDestination = 1875 + Math.floor((Math.random() * 500));
+        this.lineDestination = 375 + Math.floor((Math.random() * 100));
     },
 
     destroyShape: function(shape){
-        console.log("TööT");
         shape.destroy(true);
     },
 
@@ -270,7 +269,12 @@ var playState = {
         }
         this.timer.delay = 1500 - 20 * flyingLevel;
 
-        this.flyingScore += 0.75;
+        if(this.lineStatus == "Green"){
+            console.log("GOOOOOOOOOOOOOOD");
+            this.flyingScore += 0.75;
+        } else {
+            console.log("BAAAAAAAAAAAAAAAAAD");
+        }
     },
 
     randomItem: function(array) {
