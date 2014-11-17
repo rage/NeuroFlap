@@ -26,8 +26,9 @@ var playState = {
         this.checkScoresCounter = 0;
         this.resetScores();
 
-        this.interpolationCounter = 0;
-        //Phaser.Color.hexToColor('71c5cf',this.defaultColor);
+        this.lineY = 460;
+        this.lineDestination = 400;
+        this.lineStatus = "Green";
 
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
@@ -39,44 +40,50 @@ var playState = {
     },
 
     buttonSetup: function(){
-        var wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        var sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
-        var upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        var downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-        this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-        this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        this.wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
         this.aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         this.dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+        this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
-        wKey.onDown.add(this.reactTrue,this);
-        sKey.onDown.add(this.reactFalse,this);
-        upKey.onDown.add(this.reactTrue,this);
-        downKey.onDown.add(this.reactFalse,this);
+        var reactionFunction = this.reactButtonCombo;
 
-        this.leftKey.onDown.add(this.leftPressed,this);
-        this.rightKey.onDown.add(this.rightPressed,this);
-        this.leftKey.onUp.add(this.leftReleased,this);
-        this.rightKey.onUp.add(this.rightReleased,this);
+        this.wKey.onDown.add(reactionFunction,this);
+        this.sKey.onDown.add(reactionFunction,this);
+        this.aKey.onDown.add(reactionFunction,this);
+        this.dKey.onDown.add(reactionFunction,this);
+
+        this.leftKey.onDown.add(this.keyPressed,this);
+        this.rightKey.onDown.add(this.keyPressed,this);
+        this.leftKey.onUp.add(this.keyReleased,this);
+        this.rightKey.onUp.add(this.keyReleased,this);
+        this.upKey.onDown.add(this.keyPressed,this);
+        this.downKey.onDown.add(this.keyPressed,this);
+        this.upKey.onUp.add(this.keyReleased,this);
+        this.downKey.onUp.add(this.keyReleased,this);
+
+        this.keyNames = ["Left", "Up", "Right", "Down"];
     },
 
-    leftPressed: function(){
-        this.addToLog("Left Pressed");
+    keyPressed: function(key){
+        // LURD 37-40
+        this.addToLog(this.keyCodeToName(key.keyCode) + " Pressed");
     },
 
-    leftReleased: function(){
-        this.addToLog("Left Released");
+    keyReleased: function(key){
+        this.addToLog(this.keyCodeToName(key.keyCode) + " Released");
     },
 
-    rightPressed: function(){
-        this.addToLog("Right Pressed");
-    },
-
-    rightReleased: function(){
-        this.addToLog("Right Released");
+    keyCodeToName: function(code){
+        return this.keyNames[code - 37];
     },
 
     addToLog: function(event){
         var entry = {time: this.getTimeNow(), event: event};
+        //console.log(entry);
         loggingArray.push(entry);
     },
 
@@ -85,24 +92,83 @@ var playState = {
             this.restartGame(); 
         }
         if(this.exists(this.realShape)){
-            this.realShape.x = this.bird.x - 12;   
+            this.realShape.x = this.bird.x - 12;
+            this.realShape.y = this.bird.body.y - 25
         }
-        if(this.leftKey.isDown || this.aKey.isDown){
+        if(this.leftKey.isDown){
             this.bird.body.velocity.x -= 10 + Math.max(10,flyingLevel);
         }
-        if(this.rightKey.isDown || this.dKey.isDown){
+        if(this.rightKey.isDown){
             this.bird.body.velocity.x += 10 + Math.max(10,flyingLevel);
         }
+        if(this.upKey.isDown){
+            this.bird.body.velocity.y -= 5;
+        }
+        if(this.downKey.isDown){
+            this.bird.body.velocity.y += 5;
+        }
         this.bird.body.velocity.x = this.bird.body.velocity.x * 0.93;
+        this.bird.body.velocity.y = this.bird.body.velocity.y * 0.93;
         this.bird.angle = this.bird.body.velocity.x / 10;
         if(this.exists(this.hitMarker)){
             this.hitMarker.body.x = this.bird.body.x;
+            this.hitMarker.body.y = this.bird.body.y;
             this.hitMarker.angle = this.bird.angle;
         }
+
+        this.newLine();
 
         //console.log(loggingArray);
 
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
+    },
+
+    newLine: function(){
+        var shape = game.add.graphics(0, 0);  //init rect
+        shape.beginFill(0x00FF0B, 1);
+        
+        if(Math.abs((this.bird.body.y + 24) - this.lineY) < 15){
+            if(this.lineStatus != "Green"){
+                this.lineStatus = "Green";
+                this.addToLog("Line status: Green");
+            }
+            shape.lineStyle(2, 0x00FF00, 1);
+        } else {
+            if(this.lineStatus != "Red"){
+                this.lineStatus = "Red";
+                this.addToLog("Line status: Red");
+            }
+            shape.lineStyle(2, 0xFF0000, 1); 
+        }
+
+        shape.moveTo(0, this.lineY); // x, y
+        shape.lineTo(400, this.lineY); // x, y        
+        this.moveLine();
+
+        this.game.time.events.add(1,this.destroyShape, this,shape);
+    },
+
+    moveLine: function(){
+        if(this.lineY < this.lineDestination + 1 && this.lineY > this.lineDestination - 1){
+            this.newDestination();
+        }
+        if(this.lineY < this.lineDestination){
+            this.lineY += 0.2;
+        } else  if(this.lineY > this.lineDestination){
+            this.lineY -= 0.2;
+        } else {
+            console.log(this.lineY);
+            console.log(this.lineDestination);
+            console.log("KABOOM!");
+        }
+    },
+
+    newDestination: function(){
+        this.lineDestination = 375 + Math.floor((Math.random() * 100));
+    },
+
+    destroyShape: function(shape){
+        shape.destroy(true);
     },
 
     exists: function(object){
@@ -116,30 +182,63 @@ var playState = {
         return Date.now();
     },
 
-    reactTrue: function(){
-        this.react(true);
+    reactSingleButton: function(key){
+        if(this.wKey.isDown){
+            this.react("Green",true);
+        } else if(this.aKey.isDown){
+            this.react("Red",true);
+        } else if(this.sKey.isDown){
+            this.react("Green",false);
+        } else if(this.dKey.isDown){
+            this.react("Red",false);
+        }
     },
 
-    reactFalse: function(){
-        this.react(false);
+    reactButtonCombo: function(key){
+        if(this.wKey.isDown && this.aKey.isDown){
+            this.react("Red",true);
+        } else if(this.wKey.isDown && this.dKey.isDown){
+            this.react("Green",true);
+        } else if(this.sKey.isDown && this.dKey.isDown){
+            this.react("Green",false);
+        } else if(this.sKey.isDown && this.aKey.isDown){
+            this.react("Red",false);
+        }
     },
 
-    react: function(approved) {
-        if(this.realShape.exists && this.shapeReactable){
-            if((this.text == rightShape && this.colorName == rightColor) && approved){
-                this.addToLog("Approved correctly");
+    colorApprovedToButtons: function(color,approved){
+        var buttonCombo = "";
+        if(approved){
+            buttonCombo += "W";
+        } else {
+            buttonCombo += "S";
+        }
+        buttonCombo += " + ";
+        if(color == "Green"){
+            buttonCombo += "D";
+        } else if(color == "Red"){
+            buttonCombo += "A";
+        }
+        return buttonCombo;
+    },
+
+    logReaction: function(color,approved){
+        var pressed = "Pressed: " + this.colorApprovedToButtons(color,approved);
+        var toPress = "Target: " + this.colorApprovedToButtons(this.colorName, this.text == rightShape);
+        //console.log(pressed + " " + toPress);
+        this.addToLog(pressed + " " + toPress);
+    },
+
+    react: function(color, approved) {
+        if(this.exists(this.realShape) && this.shapeReactable){
+            this.logReaction(color,approved);
+            if((this.text == rightShape && this.colorName == color) && approved){
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 1.25;    
-            } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
-                this.addToLog("Disapproved correctly");
+            } else if((this.text != rightShape && this.colorName == color) && !approved) {
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 0.75;
             } else {
-                if(approved){
-                    this.addToLog("Approved incorrectly");    
-                } else {
-                    this.addToLog("Disapproved incorrectly"); 
-                }
                 this.startGradient(this.redGradient);
                 this.reactionsScore -= 0.75;
             }
@@ -225,7 +324,9 @@ var playState = {
         }
         this.timer.delay = 1500 - 20 * flyingLevel;
 
-        this.flyingScore += 0.75;
+        if(this.lineStatus == "Green"){
+            this.flyingScore += 0.75;
+        }
     },
 
     randomItem: function(array) {
@@ -237,8 +338,8 @@ var playState = {
         this.text = this.randomItem(this.shapes);
         this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.colorName + "-" + this.text);
         this.shapeReactable = true;
-        this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - reactionLevel * 15);
-        this.game.time.events.add(800 - reactionLevel * 15,this.shapeOff,this,this.realShape);
+        this.shapeTimer.delay = (600 + Math.random() * 500 + (800 - reactionLevel * 15))*2;
+        this.game.time.events.add((800 - reactionLevel * 15)*2,this.shapeOff,this,this.realShape);
         this.addToLog("Shape Visible"); 
     },
 
@@ -262,7 +363,6 @@ var playState = {
         this.shapeReactable = false;
         // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
-            console.log("MISSED!");
             this.startGradient(this.yellowGradient);
             this.reactionsScore -= 0.5;
             this.addToLog("Shape Missed"); 
