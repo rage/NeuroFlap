@@ -272,7 +272,8 @@ var playState = {
 
     endGame: function(){
         $.ajax({
-          url: "/api/getWeather",
+          type: "POST",  
+          url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
           data: {
             'studentNumber': '123', 'entries': this.loggingArray
             },
