@@ -35,7 +35,7 @@ var playState = {
         this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(90000, this.restartGame, this);
+        this.endTimer = this.game.time.events.add(90000, this.endGame, this);
     },
 
     buttonSetup: function(){
@@ -169,6 +169,24 @@ var playState = {
             this.hitMarker.destroy();
         }
         this.hitShield = false;
+    },
+
+    endGame: function(){
+        $.ajax({
+          url: "/api/getWeather",
+          data: {
+            'studentNumber': '123', 'entries': this.loggingArray
+            },
+          success: function( data ) {
+            console.log("DATA SENT!");
+          },
+          error: function(jqXHR) {
+            console.log("ERREUR! DATA NOT SENT");
+          }
+        });
+
+        loggingArray = [];
+        this.restartGame();
     },
 
     restartGame: function() {
