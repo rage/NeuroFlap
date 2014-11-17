@@ -40,17 +40,21 @@ var playState = {
     },
 
     buttonSetup: function(){
-        var wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        var sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+        this.wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+        this.aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
         this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
         this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        this.aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
-        this.dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
 
-        wKey.onDown.add(this.reactTrue,this);
-        sKey.onDown.add(this.reactFalse,this);
+        var reactionFunction = this.reactButtonCombo;
+
+        this.wKey.onDown.add(reactionFunction,this);
+        this.sKey.onDown.add(reactionFunction,this);
+        this.aKey.onDown.add(reactionFunction,this);
+        this.dKey.onDown.add(reactionFunction,this);
 
         this.leftKey.onDown.add(this.keyPressed,this);
         this.rightKey.onDown.add(this.keyPressed,this);
@@ -91,10 +95,10 @@ var playState = {
             this.realShape.x = this.bird.x - 12;
             this.realShape.y = this.bird.body.y - 25
         }
-        if(this.leftKey.isDown || this.aKey.isDown){
+        if(this.leftKey.isDown){
             this.bird.body.velocity.x -= 10 + Math.max(10,flyingLevel);
         }
-        if(this.rightKey.isDown || this.dKey.isDown){
+        if(this.rightKey.isDown){
             this.bird.body.velocity.x += 10 + Math.max(10,flyingLevel);
         }
         if(this.upKey.isDown){
@@ -178,30 +182,63 @@ var playState = {
         return Date.now();
     },
 
-    reactTrue: function(){
-        this.react(true);
+    reactSingleButton: function(key){
+        if(this.wKey.isDown){
+            this.react("Green",true);
+        } else if(this.aKey.isDown){
+            this.react("Red",true);
+        } else if(this.sKey.isDown){
+            this.react("Green",false);
+        } else if(this.dKey.isDown){
+            this.react("Red",false);
+        }
     },
 
-    reactFalse: function(){
-        this.react(false);
+    reactButtonCombo: function(key){
+        if(this.wKey.isDown && this.aKey.isDown){
+            this.react("Red",true);
+        } else if(this.wKey.isDown && this.dKey.isDown){
+            this.react("Green",true);
+        } else if(this.sKey.isDown && this.dKey.isDown){
+            this.react("Green",false);
+        } else if(this.sKey.isDown && this.aKey.isDown){
+            this.react("Red",false);
+        }
     },
 
-    react: function(approved) {
+    colorApprovedToButtons: function(color,approved){
+        var buttonCombo = "";
+        if(approved){
+            buttonCombo += "W";
+        } else {
+            buttonCombo += "S";
+        }
+        buttonCombo += " + ";
+        if(color == "Green"){
+            buttonCombo += "D";
+        } else if(color == "Red"){
+            buttonCombo += "A";
+        }
+        return buttonCombo;
+    },
+
+    logReaction: function(color,approved){
+        var pressed = "Pressed: " + this.colorApprovedToButtons(color,approved);
+        var toPress = "Target: " + this.colorApprovedToButtons(this.colorName, this.text == rightShape);
+        //console.log(pressed + " " + toPress);
+        this.addToLog(pressed + " " + toPress);
+    },
+
+    react: function(color, approved) {
         if(this.exists(this.realShape) && this.shapeReactable){
-            if((this.text == rightShape && this.colorName == rightColor) && approved){
-                this.addToLog("Approved correctly");
+            this.logReaction(color,approved);
+            if((this.text == rightShape && this.colorName == color) && approved){
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 1.25;    
-            } else if((this.text != rightShape || this.colorName != rightColor) && !approved) {
-                this.addToLog("Disapproved correctly");
+            } else if((this.text != rightShape && this.colorName == color) && !approved) {
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 0.75;
             } else {
-                if(approved){
-                    this.addToLog("Approved incorrectly");    
-                } else {
-                    this.addToLog("Disapproved incorrectly"); 
-                }
                 this.startGradient(this.redGradient);
                 this.reactionsScore -= 0.75;
             }
@@ -270,10 +307,7 @@ var playState = {
         this.timer.delay = 1500 - 20 * flyingLevel;
 
         if(this.lineStatus == "Green"){
-            console.log("GOOOOOOOOOOOOOOD");
             this.flyingScore += 0.75;
-        } else {
-            console.log("BAAAAAAAAAAAAAAAAAD");
         }
     },
 
@@ -286,8 +320,8 @@ var playState = {
         this.text = this.randomItem(this.shapes);
         this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.colorName + "-" + this.text);
         this.shapeReactable = true;
-        this.shapeTimer.delay = 600 + Math.random() * 500 + (800 - reactionLevel * 15);
-        this.game.time.events.add(800 - reactionLevel * 15,this.shapeOff,this,this.realShape);
+        this.shapeTimer.delay = (600 + Math.random() * 500 + (800 - reactionLevel * 15))*2;
+        this.game.time.events.add((800 - reactionLevel * 15)*2,this.shapeOff,this,this.realShape);
         this.addToLog("Shape Visible"); 
     },
 
@@ -311,7 +345,6 @@ var playState = {
         this.shapeReactable = false;
         // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
-            console.log("MISSED!");
             this.startGradient(this.yellowGradient);
             this.reactionsScore -= 0.5;
             this.addToLog("Shape Missed"); 
