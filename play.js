@@ -1,6 +1,8 @@
 var playState = {
 
     create: function() { 
+        this.running = true;
+
         this.buttonSetup();
 
         this.pipes = game.add.group();
@@ -84,7 +86,9 @@ var playState = {
     addToLog: function(event){
         var entry = {time: this.getTimeNow(), event: event};
         //console.log(entry);
-        loggingArray.push(entry);
+        if(this.running){
+            loggingArray.push(entry);
+        }
     },
 
     update: function() {
@@ -179,7 +183,7 @@ var playState = {
     },
 
     getTimeNow: function(){
-        return Date.now();
+        return Date.now()/1000;
     },
 
     reactSingleButton: function(key){
@@ -274,9 +278,7 @@ var playState = {
         $.ajax({
           type: "POST",  
           url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
-          data: {
-            'studentNumber': '123', 'entries': this.loggingArray
-            },
+          data: JSON.stringify({'studentNumber': '123', 'entries': loggingArray}),
           success: function( data ) {
             console.log("DATA SENT!");
           },
@@ -292,6 +294,8 @@ var playState = {
     restartGame: function() {
         this.game.time.events.remove(this.timer);
         this.game.time.events.remove(this.shapeTimer);
+
+        this.running = false;
 
         this.game.state.start('menu');
     },
