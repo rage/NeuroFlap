@@ -368,6 +368,10 @@ var playState = {
     endAndSend: function(){
         this.checkScores();
         var studentid = document.getElementById("student_id").value;
+        if(studentid == ""){
+            console.log("no student number!");
+            studentid = "321";
+        }
         $.ajax({
           type: "POST",  
           url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
