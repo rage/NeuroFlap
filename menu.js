@@ -24,10 +24,7 @@ var menuState = {
         var shapes = ['Circle', 'Triangle', 'Pentagon'];
         rightShape = shapes[Math.floor(Math.random()*shapes.length)];
 
-        var colorNames = ["Red", "Green"];
-        rightColor = colorNames[Math.floor(Math.random()*colorNames.length)];
-
-        var shapeText = this.game.add.text(x-185, y, "React to " + rightColor + " " + rightShape + "s", style);
+        var shapeText = this.game.add.text(x-133, y, "React to " + rightShape + "s", style);
         text.anchor.setTo(0.5, 0.5); 
     },
 

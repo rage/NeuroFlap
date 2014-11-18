@@ -38,7 +38,7 @@ var playState = {
         this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(90000, this.endGame, this);
+        this.endTimer = this.game.time.events.add(90000, this.endAndSend, this);
     },
 
     buttonSetup: function(){
@@ -160,10 +160,6 @@ var playState = {
             this.lineY += 0.2;
         } else  if(this.lineY > this.lineDestination){
             this.lineY -= 0.2;
-        } else {
-            console.log(this.lineY);
-            console.log(this.lineDestination);
-            console.log("KABOOM!");
         }
     },
 
@@ -247,9 +243,7 @@ var playState = {
                 this.reactionsScore -= 0.75;
             }
             this.shapeReactable = false;
-            // this.reactionsLabel.content = reactionLevel;
             this.realShape.destroy();
-            console.log(this.reactionsScore);
         }
     },
 
@@ -272,32 +266,6 @@ var playState = {
             this.hitMarker.destroy();
         }
         this.hitShield = false;
-    },
-
-    endGame: function(){
-        $.ajax({
-          type: "POST",  
-          url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
-          data: JSON.stringify({'studentNumber': '123', 'entries': loggingArray}),
-          success: function( data ) {
-            console.log("DATA SENT!");
-          },
-          error: function(jqXHR) {
-            console.log("ERREUR! DATA NOT SENT");
-          }
-        });
-
-        loggingArray = [];
-        this.restartGame();
-    },
-
-    restartGame: function() {
-        this.game.time.events.remove(this.timer);
-        this.game.time.events.remove(this.shapeTimer);
-
-        this.running = false;
-
-        this.game.state.start('menu');
     },
 
     addOnePipe: function(x, y) {
@@ -395,5 +363,33 @@ var playState = {
 
     resetBackground: function(){
         this.game.stage.backgroundColor = '#71c5cf';
+    },
+
+    endAndSend: function(){
+        this.checkScores();
+        var studentid = document.getElementById("student_id").value;
+        $.ajax({
+          type: "POST",  
+          url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
+          data: JSON.stringify({'studentNumber': studentid, 'entries': loggingArray, "flying":flyingLevel, "reactions":reactionLevel}),
+          success: function( data ) {
+            console.log("DATA SENT!");
+          },
+          error: function(jqXHR) {
+            console.log("ERROR! DATA NOT SENT");
+          }
+        });
+
+        loggingArray = [];
+        this.restartGame();
+    },
+
+    restartGame: function() {
+        this.game.time.events.remove(this.timer);
+        this.game.time.events.remove(this.shapeTimer);
+
+        this.running = false;
+
+        this.game.state.start('menu');
     }
 };

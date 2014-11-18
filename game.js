@@ -2,7 +2,6 @@
 var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game_div');
 
 var rightShape;
-var rightColor;
 var flyingLevel = 0;
 var reactionLevel = 0;
 var loggingArray = [];
