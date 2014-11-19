@@ -5,6 +5,9 @@ var rightShape;
 var flyingLevel = 0;
 var reactionLevel = 0;
 var loggingArray = [];
+var lineOn = true;
+var reactionsOn = true;
+var blocksOn = true;
 
 // Define all the states
 game.state.add('load', loadState);  

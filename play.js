@@ -3,13 +3,9 @@ var playState = {
     create: function() { 
         this.running = true;
 
-        this.lineOn = true;
-        this.reactionsOn = true;
-        this.blocksOn = true;
-
         this.buttonSetup();
 
-        if(this.blocksOn){
+        if(blocksOn){
             this.pipes = game.add.group();
             this.pipes.createMultiple(30, 'pipe');  
             this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
@@ -41,7 +37,7 @@ var playState = {
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
         // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
-        if(this.reactionsOn){
+        if(reactionsOn){
             this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);        
         }
         this.shapeOn = false;
@@ -59,7 +55,7 @@ var playState = {
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
-        var reactionFunction = this.reactButtonCombo;
+        var reactionFunction = this.tutorialReactToShapes;
 
         this.wKey.onDown.add(reactionFunction,this);
         this.sKey.onDown.add(reactionFunction,this);
@@ -128,7 +124,7 @@ var playState = {
             this.hitMarker.angle = this.bird.angle;
         }
 
-        if(this.lineOn){
+        if(lineOn){
             this.newLine();
         }
 
@@ -216,6 +212,26 @@ var playState = {
         }
     },
 
+    tutorialReactWithAnyButton: function(key){
+        this.tutorialReact("Tutorial", true, false, false);
+    },
+
+    tutorialReactToColors: function(key){
+        if(this.aKey.isDown){
+            this.tutorialReact("Red", true, true, false);
+        } else if(this.dKey.isDown){
+            this.tutorialReact("Green", true, true, false);
+        }
+    },
+
+    tutorialReactToShapes: function(key){
+        if(this.wKey.isDown){
+            this.tutorialReact("Tutorial", true, false, true);
+        } else if(this.sKey.isDown){
+            this.tutorialReact("Tutorial", false, false, true);
+        }
+    },
+
     colorApprovedToButtons: function(color,approved){
         var buttonCombo = "";
         if(approved){
@@ -251,6 +267,34 @@ var playState = {
             } else {
                 this.startGradient(this.redGradient);
                 this.reactionsScore -= 0.75;
+            }
+            this.shapeReactable = false;
+            this.realShape.destroy();
+        }
+    },
+
+    tutorialCheckReaction: function(color, approved, careAboutColor, careAboutShape) {
+        if(!careAboutColor && !careAboutShape){
+            return true;
+        } else if(careAboutColor && this.colorName == color && !careAboutShape){
+            return true;
+        } else if(careAboutShape && this.text == rightShape && approved && !careAboutColor){
+            return true;
+        } else if(careAboutShape && this.text != rightShape && !approved && !careAboutColor){
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    tutorialReact: function(color, approved, careAboutColor, careAboutShape){
+        if(this.exists(this.realShape) && this.shapeReactable){
+            if(this.tutorialCheckReaction(color, approved, careAboutColor, careAboutShape)){
+                this.addToLog("Tutorial reaction pass");
+                this.startGradient(this.greenGradient);
+            } else{
+                this.addToLog("Tutorial reaction fail");
+                this.startGradient(this.redGradient);
             }
             this.shapeReactable = false;
             this.realShape.destroy();
