@@ -3,11 +3,17 @@ var playState = {
     create: function() { 
         this.running = true;
 
+        this.lineOn = true;
+        this.reactionsOn = true;
+        this.blocksOn = true;
+
         this.buttonSetup();
 
-        this.pipes = game.add.group();
-        this.pipes.createMultiple(30, 'pipe');  
-        this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
+        if(this.blocksOn){
+            this.pipes = game.add.group();
+            this.pipes.createMultiple(30, 'pipe');  
+            this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
+        }
 
         this.bird = this.game.add.sprite(150, 450, 'bird');
         //this.bird.body.gravity.y = 0; 
@@ -35,7 +41,9 @@ var playState = {
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
         // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
-        this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);
+        if(this.reactionsOn){
+            this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);        
+        }
         this.shapeOn = false;
         this.hitShield = false;
         this.endTimer = this.game.time.events.add(90000, this.endAndSend, this);
@@ -120,7 +128,9 @@ var playState = {
             this.hitMarker.angle = this.bird.angle;
         }
 
-        this.newLine();
+        if(this.lineOn){
+            this.newLine();
+        }
 
         //console.log(loggingArray);
 
