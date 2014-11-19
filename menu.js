@@ -8,12 +8,12 @@ var menuState = {
         var style = { font: "30px Arial", fill: "#ffffff" };
         var x = game.world.width/2, y = game.world.height/2;
 
-        if(flyingLevel != 0){
-            var flyingScoreText = this.game.add.text(x, y-150, "Flying: " + flyingLevel, style);
+        if(this.game.flyingLevel != 0){
+            var flyingScoreText = this.game.add.text(x, y-150, "Flying: " + this.game.flyingLevel, style);
             flyingScoreText.anchor.setTo(0.5,0.5);
         }
-        if(reactionLevel != 0){
-            var reactionScoreText = this.game.add.text(x, y-100, "Reactions: " + reactionLevel, style);
+        if(this.game.reactionLevel != 0){
+            var reactionScoreText = this.game.add.text(x, y-100, "Reactions: " + this.game.reactionLevel, style);
             reactionScoreText.anchor.setTo(0.5,0.5);
         }
 
@@ -22,9 +22,9 @@ var menuState = {
         text.anchor.setTo(0.5, 0.5); 
 
         var shapes = ['Circle', 'Triangle', 'Pentagon'];
-        rightShape = shapes[Math.floor(Math.random()*shapes.length)];
+        this.game.rightShape = shapes[Math.floor(Math.random()*shapes.length)];
 
-        var shapeText = this.game.add.text(x-133, y, "React to " + rightShape + "s", style);
+        var shapeText = this.game.add.text(x-133, y, "React to " + this.game.rightShape + "s", style);
         text.anchor.setTo(0.5, 0.5); 
     },
 

@@ -1,13 +1,13 @@
 // Initialize Phaser
 var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game_div');
 
-var rightShape;
-var flyingLevel = 0;
-var reactionLevel = 0;
-var loggingArray = [];
-var lineOn = true;
-var reactionsOn = true;
-var blocksOn = true;
+game.rightShape;
+game.flyingLevel = 0;
+game.reactionLevel = 0;
+game.loggingArray = [];
+game.lineOn = true;
+game.reactionsOn = true;
+game.blocksOn = true;
 
 // Define all the states
 game.state.add('load', loadState);  

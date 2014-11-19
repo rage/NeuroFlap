@@ -3,9 +3,11 @@ var playState = {
     create: function() { 
         this.running = true;
 
+        this.game.loggingArray = [];
+
         this.buttonSetup();
 
-        if(blocksOn){
+        if(this.game.blocksOn){
             this.pipes = game.add.group();
             this.pipes.createMultiple(30, 'pipe');  
             this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
@@ -25,8 +27,8 @@ var playState = {
         this.reactionIndicator.beginFill('#00FF00',1);
         this.reactionIndicator.drawRect(100, 100, 400, 100);
 
-        flyingLevel = 10;
-        reactionLevel = 10;
+        this.game.flyingLevel = 10;
+        this.game.reactionLevel = 10;
         this.checkScoresCounter = 0;
         this.resetScores();
 
@@ -37,7 +39,7 @@ var playState = {
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
         // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
-        if(reactionsOn){
+        if(this.game.reactionsOn){
             this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);        
         }
         this.shapeOn = false;
@@ -55,7 +57,7 @@ var playState = {
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
-        var reactionFunction = this.tutorialReactToShapes;
+        var reactionFunction = this.reactButtonCombo;
 
         this.wKey.onDown.add(reactionFunction,this);
         this.sKey.onDown.add(reactionFunction,this);
@@ -91,8 +93,19 @@ var playState = {
         var entry = {time: this.getTimeNow(), event: event};
         //console.log(entry);
         if(this.running){
-            loggingArray.push(entry);
+            this.game.loggingArray.push(entry);
         }
+    },
+
+    tutorial: function (){
+        // Phase 1, Just go through stuff, don't hit the things
+        // Phase 2, Follow the line
+        // Phase 3, Follow the line AND go through stuff
+        // Phase 4, Lines and obstacles gone. Now react to stuff. Press any key of WASD when you see a shape.
+        // Phase 5, Press A for red things and D for green things
+        // Phase 6, Press W for the right shape, S for the wrong one.
+        // Phase 7, Now press for color and shape. So W+A for right red things, S + D for green wrong things.
+        // Phase 8, The real thing. Everything at once. Play for 2 minutes. Then it sends data. Thanks for participating.
     },
 
     update: function() {
@@ -104,10 +117,10 @@ var playState = {
             this.realShape.y = this.bird.body.y - 25
         }
         if(this.leftKey.isDown){
-            this.bird.body.velocity.x -= 10 + Math.max(10,flyingLevel);
+            this.bird.body.velocity.x -= 10 + Math.max(10,this.game.flyingLevel);
         }
         if(this.rightKey.isDown){
-            this.bird.body.velocity.x += 10 + Math.max(10,flyingLevel);
+            this.bird.body.velocity.x += 10 + Math.max(10,this.game.flyingLevel);
         }
         if(this.upKey.isDown){
             this.bird.body.velocity.y -= 5;
@@ -124,7 +137,7 @@ var playState = {
             this.hitMarker.angle = this.bird.angle;
         }
 
-        if(lineOn){
+        if(this.game.lineOn){
             this.newLine();
         }
 
@@ -161,7 +174,7 @@ var playState = {
     moveLine: function(){
         if(this.lineY < this.lineDestination + 1 && this.lineY > this.lineDestination - 1){
             this.newDestination();
-            this.addToLog("New line destination: " this.lineDestination);
+            this.addToLog("New line destination: " + this.lineDestination);
         }
         if(this.lineY < this.lineDestination){
             this.lineY += 0.2;
@@ -251,7 +264,7 @@ var playState = {
 
     logReaction: function(color,approved){
         var pressed = "Pressed: " + this.colorApprovedToButtons(color,approved);
-        var toPress = "Target: " + this.colorApprovedToButtons(this.colorName, this.text == rightShape);
+        var toPress = "Target: " + this.colorApprovedToButtons(this.colorName, this.text == this.game.rightShape);
         //console.log(pressed + " " + toPress);
         this.addToLog(pressed + " " + toPress);
     },
@@ -259,10 +272,10 @@ var playState = {
     react: function(color, approved) {
         if(this.exists(this.realShape) && this.shapeReactable){
             this.logReaction(color,approved);
-            if((this.text == rightShape && this.colorName == color) && approved){
+            if((this.text == this.game.rightShape && this.colorName == color) && approved){
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 1.25;    
-            } else if((this.text != rightShape && this.colorName == color) && !approved) {
+            } else if((this.text != this.game.rightShape && this.colorName == color) && !approved) {
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 0.75;
             } else {
@@ -279,9 +292,9 @@ var playState = {
             return true;
         } else if(careAboutColor && this.colorName == color && !careAboutShape){
             return true;
-        } else if(careAboutShape && this.text == rightShape && approved && !careAboutColor){
+        } else if(careAboutShape && this.text == this.game.rightShape && approved && !careAboutColor){
             return true;
-        } else if(careAboutShape && this.text != rightShape && !approved && !careAboutColor){
+        } else if(careAboutShape && this.text != this.game.rightShape && !approved && !careAboutColor){
             return true;
         } else {
             return false;
@@ -326,7 +339,7 @@ var playState = {
     addOnePipe: function(x, y) {
         var pipe = this.pipes.getFirstDead();
         pipe.reset(x, y);
-        pipe.body.velocity.y = 150 + 15 * Math.max(5 , flyingLevel);
+        pipe.body.velocity.y = 150 + 15 * Math.max(5 , this.game.flyingLevel);
         pipe.outOfBoundsKill = true;
     },
 
@@ -350,7 +363,7 @@ var playState = {
         if(this.checkScoresCounter >= 15){
             this.checkScores();
         }
-        this.timer.delay = 1500 - 20 * flyingLevel;
+        this.timer.delay = 1500 - 20 * this.game.flyingLevel;
 
         if(this.lineStatus == "Green"){
             this.flyingScore += 0.75;
@@ -366,16 +379,16 @@ var playState = {
         this.text = this.randomItem(this.shapes);
         this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.colorName + "-" + this.text);
         this.shapeReactable = true;
-        this.shapeTimer.delay = (600 + Math.random() * 500 + (800 - reactionLevel * 15))*2;
-        this.game.time.events.add((800 - reactionLevel * 15)*2,this.shapeOff,this,this.realShape);
+        this.shapeTimer.delay = (600 + Math.random() * 500 + (800 - this.game.reactionLevel * 15))*1.75;
+        this.game.time.events.add((800 - this.game.reactionLevel * 15)*2,this.shapeOff,this,this.realShape);
         this.addToLog("New Shape Visible: " + this.colorName + " " + this.text); 
     },
 
     checkScores: function() {
-        flyingLevel += (this.flyingScore - 80)/4;
-        reactionLevel += (this.reactionsScore - 80)/4;
-        this.addToLog("Flying: " + flyingLevel);
-        this.addToLog("Reactions: " + reactionLevel); 
+        this.game.flyingLevel += (this.flyingScore - 80)/4;
+        this.game.reactionLevel += (this.reactionsScore - 80)/4;
+        this.addToLog("Flying: " + this.game.flyingLevel);
+        this.addToLog("Reactions: " + this.game.reactionLevel); 
 
         this.checkScoresCounter = 0;
 
@@ -430,7 +443,7 @@ var playState = {
         $.ajax({
           type: "POST",  
           url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
-          data: JSON.stringify({'studentNumber': studentid, 'entries': loggingArray, "flying":flyingLevel, "reactions":reactionLevel}),
+          data: JSON.stringify({'studentNumber': studentid, 'entries': this.game.loggingArray, "flying":this.game.flyingLevel, "reactions":this.game.reactionLevel}),
           success: function( data ) {
             console.log("DATA SENT!");
           },
@@ -439,7 +452,6 @@ var playState = {
           }
         });
 
-        loggingArray = [];
         this.restartGame();
     },
 
