@@ -161,6 +161,7 @@ var playState = {
     moveLine: function(){
         if(this.lineY < this.lineDestination + 1 && this.lineY > this.lineDestination - 1){
             this.newDestination();
+            this.addToLog("New line destination: " this.lineDestination);
         }
         if(this.lineY < this.lineDestination){
             this.lineY += 0.2;
@@ -341,7 +342,7 @@ var playState = {
             }
         }
         this.flyingUpkeep();
-        this.addToLog("New obstacle");
+        this.addToLog("New obstacle, hole at " + hole);
     },
 
     flyingUpkeep: function() {
@@ -367,7 +368,7 @@ var playState = {
         this.shapeReactable = true;
         this.shapeTimer.delay = (600 + Math.random() * 500 + (800 - reactionLevel * 15))*2;
         this.game.time.events.add((800 - reactionLevel * 15)*2,this.shapeOff,this,this.realShape);
-        this.addToLog("Shape Visible"); 
+        this.addToLog("New Shape Visible: " + this.colorName + " " + this.text); 
     },
 
     checkScores: function() {
