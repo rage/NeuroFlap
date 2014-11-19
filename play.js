@@ -5,7 +5,7 @@ var playState = {
 
         this.game.loggingArray = [];
 
-        this.buttonSetup();
+        this.buttonSetup(this.game.reactionParameters);
 
         if(this.game.blocksOn){
             this.pipes = game.add.group();
@@ -47,7 +47,7 @@ var playState = {
         this.endTimer = this.game.time.events.add(90000, this.endAndSend, this);
     },
 
-    buttonSetup: function(){
+    buttonSetup: function(parameters){
         this.wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
         this.aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -57,7 +57,19 @@ var playState = {
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
-        var reactionFunction = this.reactButtonCombo;
+
+        var reactionFunction
+        if(parameters.colorReactions && parameters.shapeReactions){
+            reactionFunction = this.reactButtonCombo;
+        } else if(!parameters.colorReactions && parameters.shapeReactions){
+            reactionFunction = this.tutorialReactToShapes;
+        } else if(parameters.colorReactions && !parameters.shapeReactions){
+            reactionFunction = this.tutorialReactToColors;
+        } else if(!parameters.colorReactions && !parameters.shapeReactions){
+            reactionFunction = this.tutorialReactWithAnyButton;
+        } else {
+            reactionFunction = this.reactButtonCombo;
+        }
 
         this.wKey.onDown.add(reactionFunction,this);
         this.sKey.onDown.add(reactionFunction,this);
