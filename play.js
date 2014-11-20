@@ -44,7 +44,7 @@ var playState = {
         }
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(90000, this.endAndSend, this);
+        this.endTimer = this.game.time.events.add(10000, this.endAndSend, this);
     },
 
     buttonSetup: function(parameters){
@@ -107,17 +107,6 @@ var playState = {
         if(this.running){
             this.game.loggingArray.push(entry);
         }
-    },
-
-    tutorial: function (){
-        // Phase 1, Just go through stuff, don't hit the things
-        // Phase 2, Follow the line
-        // Phase 3, Follow the line AND go through stuff
-        // Phase 4, Lines and obstacles gone. Now react to stuff. Press any key of WASD when you see a shape.
-        // Phase 5, Press A for red things and D for green things
-        // Phase 6, Press W for the right shape, S for the wrong one.
-        // Phase 7, Now press for color and shape. So W+A for right red things, S + D for green wrong things.
-        // Phase 8, The real thing. Everything at once. Play for 2 minutes. Then it sends data. Thanks for participating.
     },
 
     update: function() {
@@ -473,6 +462,7 @@ var playState = {
 
         this.running = false;
 
-        this.game.state.start('menu');
+        //this.game.state.start('menu');
+        this.game.state.shutdown();
     }
 };
