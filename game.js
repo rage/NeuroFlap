@@ -22,7 +22,7 @@ function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactio
 
 startGame(true,true,true,true,true);
 
-tutorial: function (){
+function tutorial(){
     // Phase 1, Just go through stuff, don't hit the things
     startGame(false,false,true,false,false);
     // Phase 2, Follow the line
@@ -39,4 +39,4 @@ tutorial: function (){
     startGame(false,true,false,true,true);
     // Phase 8, The real thing. Everything at once. Play for 2 minutes. Then it sends data. Thanks for participating.
     startGame(true,true,true,true,true);
-},
+}

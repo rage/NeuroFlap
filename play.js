@@ -44,7 +44,7 @@ var playState = {
         }
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(10000, this.endAndSend, this);
+        this.endTimer = this.game.time.events.add(90000, this.endAndSend, this);
     },
 
     buttonSetup: function(parameters){
@@ -462,7 +462,6 @@ var playState = {
 
         this.running = false;
 
-        //this.game.state.start('menu');
-        this.game.state.shutdown();
+        this.game.state.start('menu');
     }
 };
