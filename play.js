@@ -44,7 +44,7 @@ var playState = {
         }
         this.shapeOn = false;
         this.hitShield = false;
-        this.endTimer = this.game.time.events.add(90000, this.endAndSend, this);
+        this.endTimer = this.game.time.events.add(this.game.gameLength * 1000, this.endAndSend, this);
     },
 
     buttonSetup: function(parameters){
@@ -319,7 +319,7 @@ var playState = {
     hitPipe: function() {
         if (this.bird.alive == false)
             return;
-        if(!this.hitShield){
+        if(!this.hitShield && this.game.blocksOn){
             this.addToLog("Hit obstacle");
             this.hitMarker = this.game.add.sprite(this.bird.x, this.bird.y, "hit");
             this.hitMarker.anchor.setTo(0.5, 0.5);
@@ -462,6 +462,7 @@ var playState = {
 
         this.running = false;
 
-        this.game.state.start('menu');
+        this.game.gameOver = true;
+        this.game.state.start('end');
     }
 };
