@@ -1,7 +1,7 @@
 // Initialize Phaser
 var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game_div');
 
-var waitTime = 22000;
+var waitTime = 25000;
 
 function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactionsOn, message, gameLength) {
 	game.gameOver = false;
@@ -30,7 +30,9 @@ function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactio
 
 //startGame(true,true,true,true,true,"Press Space to start", 90);
 
-phaseOne();
+//phaseOne();
+
+phaseEight();
 
 function phaseOne(){
 	startGame(false,false,true,false,false,"Go through the gaps", 20);
@@ -92,7 +94,7 @@ function phaseSeven(){
 }
 
 function phaseEight(){
-    startGame(true,true,true,true,true,"Everything at once", 90);
+    startGame(true,true,true,true,true,"Everything at once", 300);
 }
 
 function tutorial(){

@@ -142,7 +142,7 @@ var playState = {
             this.newLine();
         }
 
-        //console.log(loggingArray);
+        console.log("Flying: " + this.game.flyingLevel + " Reactions: " + this.game.reactionLevel + " Flying score: " + this.flyingScore);
 
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
     },
@@ -275,7 +275,7 @@ var playState = {
             this.logReaction(color,approved);
             if((this.text == this.game.rightShape && this.colorName == color) && approved){
                 this.startGradient(this.greenGradient);
-                this.reactionsScore += 1.25;    
+                this.reactionsScore += 0.75;    
             } else if((this.text != this.game.rightShape && this.colorName == color) && !approved) {
                 this.startGradient(this.greenGradient);
                 this.reactionsScore += 0.75;
@@ -340,7 +340,7 @@ var playState = {
     addOnePipe: function(x, y) {
         var pipe = this.pipes.getFirstDead();
         pipe.reset(x, y);
-        pipe.body.velocity.y = 150 + 15 * Math.max(5 , this.game.flyingLevel);
+        pipe.body.velocity.y = 150 + 10 * Math.max(5 , this.game.flyingLevel * 1.5);
         pipe.outOfBoundsKill = true;
     },
 
@@ -364,7 +364,7 @@ var playState = {
         if(this.checkScoresCounter >= 15){
             this.checkScores();
         }
-        this.timer.delay = 1500 - 20 * this.game.flyingLevel;
+        this.timer.delay = 1550 - 25 * this.game.flyingLevel;
 
         if(this.lineStatus == "Green"){
             this.flyingScore += 0.75;
@@ -380,8 +380,8 @@ var playState = {
         this.text = this.randomItem(this.shapes);
         this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.colorName + "-" + this.text);
         this.shapeReactable = true;
-        this.shapeTimer.delay = (600 + Math.random() * 500 + (800 - this.game.reactionLevel * 15))*1.75;
-        this.game.time.events.add((800 - this.game.reactionLevel * 15)*2,this.shapeOff,this,this.realShape);
+        this.shapeTimer.delay = (600 + Math.random() * 500 + (900 - this.game.reactionLevel * 25))*1.75;
+        this.game.time.events.add((900 - this.game.reactionLevel * 25)*2,this.shapeOff,this,this.realShape);
         this.addToLog("New Shape Visible: " + this.colorName + " " + this.text); 
     },
 
@@ -406,7 +406,7 @@ var playState = {
         // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
             this.startGradient(this.yellowGradient);
-            this.reactionsScore -= 0.5;
+            this.reactionsScore -= 0.75;
             this.addToLog("Shape Missed"); 
             object.destroy();
         }
@@ -435,16 +435,23 @@ var playState = {
     },
 
     endAndSend: function(){
+        console.log("before checking scores: " + this.game.flyinglevel);
         this.checkScores();
+        console.log("after checking scores: " + this.game.flyinglevel);
         var studentid = document.getElementById("student_id").value;
         if(studentid == ""){
             console.log("no student number!");
             studentid = "321";
         }
+        var realGame = false;
+        console.log(this.game.lineOn + " " + this.game.reactionsOn + " " + this.game.blocksOn + " " + this.game.reactionParameters.colorReactions + " " + this.game.reactionParameters.shapeReactions);
+        if(this.game.lineOn && this.game.reactionsOn && this.game.blocksOn && this.game.reactionParameters.colorReactions && this.game.reactionParameters.shapeReactions){
+            realGame = true;
+        }
         $.ajax({
           type: "POST",  
           url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
-          data: JSON.stringify({'studentNumber': studentid, 'entries': this.game.loggingArray, "flying":this.game.flyingLevel, "reactions":this.game.reactionLevel}),
+          data: JSON.stringify({'studentNumber': studentid, 'entries': this.game.loggingArray, 'flying':this.game.flyingLevel, 'reactions':this.game.reactionLevel, 'realData':realGame}),
           success: function( data ) {
             console.log("DATA SENT!");
           },
@@ -452,6 +459,7 @@ var playState = {
             console.log("ERROR! DATA NOT SENT");
           }
         });
+        console.log("data was: studentid: " + studentid + " flyinglevel: " + this.game.flyingLevel + " reactions: " + this.game.reactionLevel + " realData: " + realGame);
 
         this.restartGame();
     },
