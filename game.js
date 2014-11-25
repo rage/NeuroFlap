@@ -30,71 +30,74 @@ function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactio
 
 //startGame(true,true,true,true,true,"Press Space to start", 90);
 
-//phaseOne();
+//gaps();
 
-phaseEight();
+//allFeatures();
 
-function phaseOne(){
+var phases = [gaps, line, gapsAndLine, react, reactColors, reactShapes, reactShapesAndColors, allFeatures];
+var phases2 = [gaps, gapsAndLine, gapsLineAndReact, gapsLineAndReactColors, gapsLineAndReactShapes, gapsLineReactShapseAndColors];
+
+game.gameOver = true;
+//nextPhase(0, phases);
+nextPhase(1,phases2);
+
+function nextPhase(index, phasesArray){
+	if(game.gameOver){
+		phasesArray[index]();
+		if(index + 1 < phasesArray.length){
+			setTimeout(nextPhase,waitTime,index+1,phasesArray);
+		}
+	} else {
+		setTimeout(nextPhase,1000, index,phasesArray);
+	}
+}
+
+function gaps(){
 	startGame(false,false,true,false,false,"Go through the gaps", 20);
-	setTimeout(phaseTwo,waitTime);
 }
 
-function phaseTwo(){
-	if(game.gameOver){
-    	startGame(true,false,false,false,false,"Stay on the line", 20);
-		setTimeout(phaseThree,waitTime);
-	} else {
-		setTimeout(phaseTwo, 1000);
-	}
+function line(){
+    startGame(true,false,false,false,false,"Stay on the line", 20);
 }
 
-function phaseThree(){
-    if(game.gameOver){
-    	startGame(true,false,true,false,false,"Gaps AND line",20);
-		setTimeout(phaseFour,waitTime);
-	} else {
-		setTimeout(phaseThree, 1000);
-	}
+function gapsAndLine(){
+    startGame(true,false,true,false,false,"Now stay on the line too",20);
 }
 
-function phaseFour(){
-	if(game.gameOver){
-    	startGame(false,true,false,false,false,"Press any WASD key when you see a shape",20);
-		setTimeout(phaseFive,waitTime);
-	} else {
-		setTimeout(phaseFour, 1000);
-	}
+function gapsLineAndReact(){
+   	startGame(true,true,true,false,false,"Press any WASD key when you see a shape",20);
 }
 
-function phaseFive(){
-	if(game.gameOver){
-	    startGame(false,true,false,true,false,"Press A for red, D for Green",20);
-		setTimeout(phaseSix,waitTime);
-	} else {
-		setTimeout(phaseFive, 1000);
-	}
+function react(){
+   	startGame(false,true,false,false,false,"Press any WASD key when you see a shape",20);
 }
 
-function phaseSix(){
-	if(game.gameOver){
-    	startGame(false,true,false,false,true,"Press W for given shape. S for any other",20);
-		setTimeout(phaseSeven,waitTime);
-	} else {
-		setTimeout(phaseSix, 1000);
-	}
+function reactColors(){
+    startGame(false,true,false,true,false,"Press A for red, D for Green",20);
 }
 
-function phaseSeven(){
-	if(game.gameOver){
-	    startGame(false,true,false,true,true,"Now both color and shape",20);
-		setTimeout(phaseEight,waitTime);
-	} else {
-		setTimeout(phaseSeven, 1000);
-	}
+function gapsLineAndReactColors(){
+    startGame(true,true,true,true,false,"Press A for red, D for Green",20);
 }
 
-function phaseEight(){
+function reactShapes(){
+   	startGame(false,true,false,false,true,"Press W for given shape. S for any other",20);
+}
+
+function gapsLineAndReactShapes(){
+   	startGame(true,true,true,false,true,"Press W for given shape. S for any other",20);
+}
+
+function reactShapesAndColors(){
+    startGame(false,true,false,true,true,"Now both color and shape",20);
+}
+
+function allFeatures(){
     startGame(true,true,true,true,true,"Everything at once", 300);
+}
+
+function gapsLineReactShapseAndColors(){
+    startGame(true,true,true,true,true,"React to both shape and color", 300);
 }
 
 function tutorial(){

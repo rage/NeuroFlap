@@ -156,13 +156,13 @@ var playState = {
                 this.lineStatus = "Green";
                 this.addToLog("Line status: Green");
             }
-            shape.lineStyle(2, 0x00FF00, 1);
+            shape.lineStyle(2, 0x2E64FE, 1);
         } else {
             if(this.lineStatus != "Red"){
                 this.lineStatus = "Red";
                 this.addToLog("Line status: Red");
             }
-            shape.lineStyle(2, 0xFF0000, 1); 
+            shape.lineStyle(2, 0xB43104, 1); 
         }
 
         shape.moveTo(0, this.lineY); // x, y
