@@ -31,7 +31,7 @@ function startGame(settings, message, gameLength) {
 //allFeatures();
 
 var phases = [gaps, line, gapsAndLine, react, reactColors, reactShapes, reactShapesAndColors, allFeatures];
-var phases2 = [gaps, gapsAndLine, gapsLineAndReact, gapsLineAndReactColors, gapsLineAndReactShapes, gapsLineReactShapesAndColors];
+var phases2 = [gaps, gapsAndLine, gapsLineAndReact, gapsLineAndReactColors, gapsLineAndReactShapes, gapsLineReactShapesAndColors, allFeatures];
 var phases3 = [testGame];
 
 game.gameOver = true;
@@ -86,7 +86,7 @@ function reactColors(){
 function gapsLineAndReactColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for red, D for Green",20);
+    startGame(settings,"Press A for red, D for Green",30);
 }
 
 function reactShapes(){
@@ -98,7 +98,7 @@ function reactShapes(){
 function gapsLineAndReactShapes(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true};
 
-   	startGame(settings,"Press W for given shape. S for any other",20);
+   	startGame(settings,"Press W for given shape. S for any other",30);
 }
 
 function reactShapesAndColors(){
@@ -110,7 +110,7 @@ function reactShapesAndColors(){
 function allFeatures(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Everything at once", 240);
+    startGame(settings,"Do your best in 4 minutes. For Science.", 240);
 }
 
 function testGame(){
@@ -122,7 +122,7 @@ function testGame(){
 function gapsLineReactShapesAndColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"React to both shape and color", 240);
+    startGame(settings,"React to both shape and color", 30);
 }
 
 function tutorial(){

@@ -18,7 +18,7 @@ var playState = {
         this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
-        this.colors =['Red','Green'];  // green: 057c1a red: a30909
+        this.colors =['Red','Green'];  // green: 057c1a red: a30909 // CHANGE TO BLUE: 0924a3 YELLOW: fdfd09
         this.redGradient = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
         this.yellowGradient = ['#FFFF00', '#F0F914', '#E2F329', '#D4ED3E', '#C6E752', '#B8E267', '#A9DC7C', '#9BD690', '#8DD0A5', '#7FCABA', '#71C5CF'];
         this.greenGradient = ['#00FF00', '#0BF914', '#16F329', '#21ED3E', '#2DE752', '#38E267', '#43DC7C', '#4FD690', '#5AD0A5', '#65CABA', '#71C5CF'];
@@ -140,8 +140,6 @@ var playState = {
         if(this.game.settings.lineOn){
             this.newLine();
         }
-
-        console.log("Flying: " + this.game.flyingLevel + " Reactions: " + this.game.reactionLevel + " Flying score: " + this.flyingScore);
 
         this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
     },
@@ -393,6 +391,8 @@ var playState = {
         this.checkScoresCounter = 0;
 
         this.resetScores();
+
+        console.log("Flying: " + this.game.flyingLevel + " Reactions: " + this.game.reactionLevel);
     },
 
     resetScores: function(){
