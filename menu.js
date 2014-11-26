@@ -30,6 +30,8 @@ var menuState = {
         }
 
         this.game.add.sprite(75,300,this.determineKeyPicture());
+
+        this.game.add.text(100,450,"Press space to continue",style);
     },
 
     determineKeyPicture: function() {
