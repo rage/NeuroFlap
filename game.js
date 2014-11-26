@@ -9,7 +9,6 @@ function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactio
 	game.rightShape;
 	game.flyingLevel = 0;
 	game.reactionLevel = 0;
-	game.loggingArray = [];
 	game.lineOn = lineOn;
 	game.reactionsOn = reactionsOn;
 	game.blocksOn = blocksOn;
@@ -35,11 +34,12 @@ function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactio
 //allFeatures();
 
 var phases = [gaps, line, gapsAndLine, react, reactColors, reactShapes, reactShapesAndColors, allFeatures];
-var phases2 = [gaps, gapsAndLine, gapsLineAndReact, gapsLineAndReactColors, gapsLineAndReactShapes, gapsLineReactShapseAndColors];
+var phases2 = [gaps, gapsAndLine, gapsLineAndReact, gapsLineAndReactColors, gapsLineAndReactShapes, gapsLineReactShapesAndColors];
+var phases3 = [testGame];
 
 game.gameOver = true;
 //nextPhase(0, phases);
-nextPhase(1,phases2);
+nextPhase(0,phases2);
 
 function nextPhase(index, phasesArray){
 	if(game.gameOver){
@@ -93,11 +93,15 @@ function reactShapesAndColors(){
 }
 
 function allFeatures(){
-    startGame(true,true,true,true,true,"Everything at once", 300);
+    startGame(true,true,true,true,true,"Everything at once", 240);
 }
 
-function gapsLineReactShapseAndColors(){
-    startGame(true,true,true,true,true,"React to both shape and color", 300);
+function testGame(){
+    startGame(true,true,true,true,true,"Test game", 10);
+}
+
+function gapsLineReactShapesAndColors(){
+    startGame(true,true,true,true,true,"React to both shape and color", 240);
 }
 
 function tutorial(){

@@ -57,7 +57,6 @@ var playState = {
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
-
         var reactionFunction
         if(parameters.colorReactions && parameters.shapeReactions){
             reactionFunction = this.reactButtonCombo;
@@ -435,23 +434,20 @@ var playState = {
     },
 
     endAndSend: function(){
-        console.log("before checking scores: " + this.game.flyinglevel);
         this.checkScores();
-        console.log("after checking scores: " + this.game.flyinglevel);
         var studentid = document.getElementById("student_id").value;
         if(studentid == ""){
             console.log("no student number!");
             studentid = "321";
         }
-        var realGame = false;
-        console.log(this.game.lineOn + " " + this.game.reactionsOn + " " + this.game.blocksOn + " " + this.game.reactionParameters.colorReactions + " " + this.game.reactionParameters.shapeReactions);
+        var actualSession = false;
         if(this.game.lineOn && this.game.reactionsOn && this.game.blocksOn && this.game.reactionParameters.colorReactions && this.game.reactionParameters.shapeReactions){
-            realGame = true;
+            actualSession = true;
         }
         $.ajax({
           type: "POST",  
           url: "https://mcviinam.users.cs.helsinki.fi/neuroflap/save.php",
-          data: JSON.stringify({'studentNumber': studentid, 'entries': this.game.loggingArray, 'flying':this.game.flyingLevel, 'reactions':this.game.reactionLevel, 'realData':realGame}),
+          data: JSON.stringify({'studentNumber': studentid, 'entries': this.game.loggingArray, 'flying':this.game.flyingLevel, 'reactions':this.game.reactionLevel, 'actualSession':actualSession}),
           success: function( data ) {
             console.log("DATA SENT!");
           },
@@ -459,7 +455,7 @@ var playState = {
             console.log("ERROR! DATA NOT SENT");
           }
         });
-        console.log("data was: studentid: " + studentid + " flyinglevel: " + this.game.flyingLevel + " reactions: " + this.game.reactionLevel + " realData: " + realGame);
+        //console.log("data was: studentid: " + studentid + " flyinglevel: " + this.game.flyingLevel + " reactions: " + this.game.reactionLevel + " realData: " + actualSession);
 
         this.restartGame();
     },
