@@ -5,9 +5,9 @@ var playState = {
 
         this.game.loggingArray = [];
 
-        this.buttonSetup(this.game.reactionParameters);
+        this.buttonSetup(this.game.settings.colorReactionsOn, this.game.settings.shapeReactionsOn);
 
-        if(this.game.blocksOn){
+        if(this.game.settings.blocksOn){
             this.pipes = game.add.group();
             this.pipes.createMultiple(30, 'pipe');  
             this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
@@ -39,7 +39,7 @@ var playState = {
         var style = { font: "30px Arial", fill: "#ffffff" };
         // this.flyingLabel = this.game.add.text(20, 20, "10", style);
         // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
-        if(this.game.reactionsOn){
+        if(this.game.settings.reactionsOn){
             this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);        
         }
         this.shapeOn = false;
@@ -47,7 +47,7 @@ var playState = {
         this.endTimer = this.game.time.events.add(this.game.gameLength * 1000, this.endAndSend, this);
     },
 
-    buttonSetup: function(parameters){
+    buttonSetup: function(colorReactions,shapeReactions){
         this.wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
         this.aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -58,13 +58,13 @@ var playState = {
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
         var reactionFunction
-        if(parameters.colorReactions && parameters.shapeReactions){
+        if(colorReactions && shapeReactions){
             reactionFunction = this.reactButtonCombo;
-        } else if(!parameters.colorReactions && parameters.shapeReactions){
+        } else if(!colorReactions && shapeReactions){
             reactionFunction = this.tutorialReactToShapes;
-        } else if(parameters.colorReactions && !parameters.shapeReactions){
+        } else if(colorReactions && !shapeReactions){
             reactionFunction = this.tutorialReactToColors;
-        } else if(!parameters.colorReactions && !parameters.shapeReactions){
+        } else if(!colorReactions && !shapeReactions){
             reactionFunction = this.tutorialReactWithAnyButton;
         } else {
             reactionFunction = this.reactButtonCombo;
@@ -137,7 +137,7 @@ var playState = {
             this.hitMarker.angle = this.bird.angle;
         }
 
-        if(this.game.lineOn){
+        if(this.game.settings.lineOn){
             this.newLine();
         }
 
@@ -318,7 +318,7 @@ var playState = {
     hitPipe: function() {
         if (this.bird.alive == false)
             return;
-        if(!this.hitShield && this.game.blocksOn){
+        if(!this.hitShield && this.game.settings.blocksOn){
             this.addToLog("Hit obstacle");
             this.hitMarker = this.game.add.sprite(this.bird.x, this.bird.y, "hit");
             this.hitMarker.anchor.setTo(0.5, 0.5);
@@ -441,7 +441,7 @@ var playState = {
             studentid = "321";
         }
         var actualSession = false;
-        if(this.game.lineOn && this.game.reactionsOn && this.game.blocksOn && this.game.reactionParameters.colorReactions && this.game.reactionParameters.shapeReactions){
+        if(this.game.settings.lineOn && this.game.settings.reactionsOn && this.game.settings.blocksOn && this.game.settings.colorReactionsOn && this.game.settings.shapeReactionsOn){
             actualSession = true;
         }
         $.ajax({

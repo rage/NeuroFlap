@@ -10,6 +10,11 @@ var loadState = {
         this.game.load.image('Red-Triangle', 'assets/red-triangle.png'); 
         this.game.load.image('Green-Pentagon', 'assets/green-pentagon.png'); 
         this.game.load.image('Red-Pentagon', 'assets/red-pentagon.png'); 
+        this.game.load.image('LRKeys', 'assets/LeftRightArrowKeys.png');
+        this.game.load.image('ArrowKeys', 'assets/ArrowKeys.png');
+        this.game.load.image('ArrowKeysAD', 'assets/ArrowKeysAD.png');
+        this.game.load.image('ArrowKeysSW', 'assets/ArrowKeysSW.png');
+        this.game.load.image('AllKeys', 'assets/AllKeys.png');
     },
 
     create: function() {

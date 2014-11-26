@@ -3,16 +3,13 @@ var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game_div');
 
 var waitTime = 25000;
 
-function startGame(lineOn, reactionsOn, blocksOn, colorReactionsOn, shapeReactionsOn, message, gameLength) {
+function startGame(settings, message, gameLength) {
 	game.gameOver = false;
 
 	game.rightShape;
 	game.flyingLevel = 0;
 	game.reactionLevel = 0;
-	game.lineOn = lineOn;
-	game.reactionsOn = reactionsOn;
-	game.blocksOn = blocksOn;
-	game.reactionParameters = {colorReactions:colorReactionsOn, shapeReactions:shapeReactionsOn};
+	game.settings = settings;
 
 	game.startingMessage = message;
 	game.gameLength = gameLength;
@@ -53,55 +50,79 @@ function nextPhase(index, phasesArray){
 }
 
 function gaps(){
-	startGame(false,false,true,false,false,"Go through the gaps", 20);
+	var settings = {blocksOn:true};
+	startGame(settings,"Go through the gaps", 20);
 }
 
 function line(){
-    startGame(true,false,false,false,false,"Stay on the line", 20);
+	var settings = {lineOn:true};
+    startGame(settings,"Stay on the line", 20);
 }
 
 function gapsAndLine(){
-    startGame(true,false,true,false,false,"Now stay on the line too",20);
+	var settings = {blocksOn:true,lineOn:true};
+
+    startGame(settings,"Now stay on the line too",20);
 }
 
 function gapsLineAndReact(){
-   	startGame(true,true,true,false,false,"Press any WASD key when you see a shape",20);
+	var settings = {blocksOn:true,lineOn:true,reactionsOn:true};
+
+   	startGame(settings,"Press any WASD key when you see a shape",20);
 }
 
 function react(){
-   	startGame(false,true,false,false,false,"Press any WASD key when you see a shape",20);
+	var settings = {reactionsOn:true};
+
+   	startGame(settings,"Press any WASD key when you see a shape",20);
 }
 
 function reactColors(){
-    startGame(false,true,false,true,false,"Press A for red, D for Green",20);
+	var settings = {reactionsOn:true,colorReactionsOn:true};
+
+    startGame(settings,"Press A for red, D for Green",20);
 }
 
 function gapsLineAndReactColors(){
-    startGame(true,true,true,true,false,"Press A for red, D for Green",20);
+	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,colorReactionsOn:true};
+
+    startGame(settings,"Press A for red, D for Green",20);
 }
 
 function reactShapes(){
-   	startGame(false,true,false,false,true,"Press W for given shape. S for any other",20);
+	var settings = {reactionsOn:true,shapeReactionsOn:true};
+
+   	startGame(settings,"Press W for given shape. S for any other",20);
 }
 
 function gapsLineAndReactShapes(){
-   	startGame(true,true,true,false,true,"Press W for given shape. S for any other",20);
+	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true};
+
+   	startGame(settings,"Press W for given shape. S for any other",20);
 }
 
 function reactShapesAndColors(){
-    startGame(false,true,false,true,true,"Now both color and shape",20);
+	var settings = {reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
+
+    startGame(settings,"Now both color and shape",20);
 }
 
 function allFeatures(){
-    startGame(true,true,true,true,true,"Everything at once", 240);
+	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
+
+    startGame(settings,"Everything at once", 240);
 }
 
 function testGame(){
-    startGame(true,true,true,true,true,"Test game", 10);
+	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
+
+    startGame(settings,"Test game", 10);
 }
 
 function gapsLineReactShapesAndColors(){
-    startGame(true,true,true,true,true,"React to both shape and color", 240);
+	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
+
+    startGame(settings,"React to both shape and color", 240);
 }
 
 function tutorial(){

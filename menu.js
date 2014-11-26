@@ -24,10 +24,34 @@ var menuState = {
         var shapes = ['Circle', 'Triangle', 'Pentagon'];
         this.game.rightShape = shapes[Math.floor(Math.random()*shapes.length)];
 
-        if(this.game.reactionParameters.shapeReactions){
+        if(this.game.settings.shapeReactionsOn){
             var shapeText = this.game.add.text(x-133, y, "React to " + this.game.rightShape + "s", style);
             text.anchor.setTo(0.5, 0.5); 
         }
+
+        this.game.add.sprite(75,300,this.determineKeyPicture());
+    },
+
+    determineKeyPicture: function() {
+        if(!this.game.settings.reactionsOn){
+            if(!this.game.settings.lineOn){
+                return "LRKeys";
+            } else {
+                return "ArrowKeys";
+            }
+        } else {
+            if(game.settings.colorReactionsOn && game.settings.shapeReactionsOn){
+                return "AllKeys";
+            } else if (game.settings.colorReactionsOn && !game.settings.shapeReactionsOn){
+                return "ArrowKeysAD";
+            } else if (!game.settings.colorReactionsOn && game.settings.shapeReactionsOn){
+                return "ArrowKeysSW";
+            } else {
+                return "AllKeys";
+            }
+        }
+
+        return "ArrowKeys";
     },
 
     // Start the actual game
