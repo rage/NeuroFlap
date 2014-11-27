@@ -80,13 +80,13 @@ function react(){
 function reactColors(){
 	var settings = {reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for red, D for Green",20);
+    startGame(settings,"Press A for blue, D for yellow",20);
 }
 
 function gapsLineAndReactColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for red, D for Green",30);
+    startGame(settings,"Press A for blue, D for yellow",30);
 }
 
 function reactShapes(){

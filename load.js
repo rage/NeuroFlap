@@ -4,12 +4,12 @@ var loadState = {
         this.game.load.image('bird', 'assets/bird.png');  
         this.game.load.image('pipe', 'assets/pipe.png');
         this.game.load.image('hit', 'assets/hit.png');
-        this.game.load.image('Green-Circle', 'assets/green-circle.png'); 
-        this.game.load.image('Red-Circle', 'assets/red-circle.png');  
-        this.game.load.image('Green-Triangle', 'assets/green-triangle.png'); 
-        this.game.load.image('Red-Triangle', 'assets/red-triangle.png'); 
-        this.game.load.image('Green-Pentagon', 'assets/green-pentagon.png'); 
-        this.game.load.image('Red-Pentagon', 'assets/red-pentagon.png'); 
+        this.game.load.image('Blue-Circle', 'assets/blue-circle.png'); 
+        this.game.load.image('Yellow-Circle', 'assets/yellow-circle.png');  
+        this.game.load.image('Blue-Triangle', 'assets/blue-triangle.png'); 
+        this.game.load.image('Yellow-Triangle', 'assets/yellow-triangle.png'); 
+        this.game.load.image('Blue-Pentagon', 'assets/blue-pentagon.png'); 
+        this.game.load.image('Yellow-Pentagon', 'assets/yellow-pentagon.png'); 
         this.game.load.image('LRKeys', 'assets/LeftRightArrowKeys.png');
         this.game.load.image('ArrowKeys', 'assets/ArrowKeys.png');
         this.game.load.image('ArrowKeysAD', 'assets/ArrowKeysAD.png');

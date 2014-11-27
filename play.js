@@ -18,7 +18,7 @@ var playState = {
         this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
-        this.colors =['Red','Green'];  // green: 057c1a red: a30909 // CHANGE TO BLUE: 0924a3 YELLOW: fdfd09
+        this.colors =['Blue','Yellow'];  // green: 057c1a red: a30909 // CHANGE TO BLUE: 0924a3 YELLOW: fdfd09
         this.redGradient = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
         this.yellowGradient = ['#FFFF00', '#F0F914', '#E2F329', '#D4ED3E', '#C6E752', '#B8E267', '#A9DC7C', '#9BD690', '#8DD0A5', '#7FCABA', '#71C5CF'];
         this.greenGradient = ['#00FF00', '#0BF914', '#16F329', '#21ED3E', '#2DE752', '#38E267', '#43DC7C', '#4FD690', '#5AD0A5', '#65CABA', '#71C5CF'];
@@ -202,25 +202,25 @@ var playState = {
 
     reactSingleButton: function(key){
         if(this.wKey.isDown){
-            this.react("Green",true);
+            this.react("Yellow",true);
         } else if(this.aKey.isDown){
-            this.react("Red",true);
+            this.react("Blue",true);
         } else if(this.sKey.isDown){
-            this.react("Green",false);
+            this.react("Yellow",false);
         } else if(this.dKey.isDown){
-            this.react("Red",false);
+            this.react("Blue",false);
         }
     },
 
     reactButtonCombo: function(key){
         if(this.wKey.isDown && this.aKey.isDown){
-            this.react("Red",true);
+            this.react("Blue",true);
         } else if(this.wKey.isDown && this.dKey.isDown){
-            this.react("Green",true);
+            this.react("Yellow",true);
         } else if(this.sKey.isDown && this.dKey.isDown){
-            this.react("Green",false);
+            this.react("Yellow",false);
         } else if(this.sKey.isDown && this.aKey.isDown){
-            this.react("Red",false);
+            this.react("Blue",false);
         }
     },
 
@@ -230,9 +230,9 @@ var playState = {
 
     tutorialReactToColors: function(key){
         if(this.aKey.isDown){
-            this.tutorialReact("Red", true, true, false);
+            this.tutorialReact("Blue", true, true, false);
         } else if(this.dKey.isDown){
-            this.tutorialReact("Green", true, true, false);
+            this.tutorialReact("Yellow", true, true, false);
         }
     },
 
@@ -252,9 +252,9 @@ var playState = {
             buttonCombo += "S";
         }
         buttonCombo += " + ";
-        if(color == "Green"){
+        if(color == "Yellow"){
             buttonCombo += "D";
-        } else if(color == "Red"){
+        } else if(color == "Blue"){
             buttonCombo += "A";
         }
         return buttonCombo;
