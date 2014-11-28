@@ -113,7 +113,7 @@ var playState = {
             this.restartGame(); 
         }
         if(this.exists(this.realShape)){
-            this.realShape.x = this.bird.x - 12;
+            this.realShape.x = this.bird.x - 12 + this.shapeOffSet;
             this.realShape.y = this.bird.body.y - 25
         }
         if(this.leftKey.isDown){
@@ -375,7 +375,8 @@ var playState = {
     newShape: function() {
         this.colorName = this.randomItem(this.colors);
         this.text = this.randomItem(this.shapes);
-        this.realShape = this.game.add.sprite(this.bird.body.x, this.bird.body.y - 25,this.colorName + "-" + this.text);
+        this.shapeOffSet = (Math.floor(Math.random()*30)-15);
+        this.realShape = this.game.add.sprite(this.bird.body.x + this.shapeOffSet, this.bird.body.y - 25,this.colorName + "-" + this.text);
         this.shapeReactable = true;
         this.shapeTimer.delay = (600 + Math.random() * 500 + (900 - this.game.reactionLevel * 25))*1.75;
         this.game.time.events.add((900 - this.game.reactionLevel * 25)*2,this.shapeOff,this,this.realShape);
@@ -466,7 +467,6 @@ var playState = {
 
         this.running = false;
 
-        this.game.gameOver = true;
         this.game.state.start('end');
     }
 };

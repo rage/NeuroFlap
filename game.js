@@ -1,11 +1,7 @@
 // Initialize Phaser
 var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game_div');
 
-var waitTime = 25000;
-
 function startGame(settings, message, gameLength) {
-	game.gameOver = false;
-
 	game.rightShape;
 	game.flyingLevel = 0;
 	game.reactionLevel = 0;
@@ -34,19 +30,12 @@ var phases = [gaps, line, gapsAndLine, react, reactColors, reactShapes, reactSha
 var phases2 = [gaps, gapsAndLine, gapsLineAndReact, gapsLineAndReactColors, gapsLineAndReactShapes, gapsLineReactShapesAndColors, allFeatures];
 var phases3 = [testGame];
 
-game.gameOver = true;
 //nextPhase(0, phases);
 nextPhase(0,phases2);
 
 function nextPhase(index, phasesArray){
-	if(game.gameOver){
-		phasesArray[index]();
-		if(index + 1 < phasesArray.length){
-			setTimeout(nextPhase,waitTime,index+1,phasesArray);
-		}
-	} else {
-		setTimeout(nextPhase,1000, index,phasesArray);
-	}
+	phasesArray[index]();
+	game.callback = (function() {nextPhase(index+1,phasesArray)});
 }
 
 function gaps(){
@@ -80,31 +69,31 @@ function react(){
 function reactColors(){
 	var settings = {reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for blue, D for yellow",20);
+    startGame(settings,"Press A for blue. D for yellow",20);
 }
 
 function gapsLineAndReactColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for blue, D for yellow",30);
+    startGame(settings,"Press A for blue. D for yellow",30);
 }
 
 function reactShapes(){
 	var settings = {reactionsOn:true,shapeReactionsOn:true};
 
-   	startGame(settings,"Press W for given shape. S for any other",20);
+   	startGame(settings,"",20);
 }
 
 function gapsLineAndReactShapes(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true};
 
-   	startGame(settings,"Press W for given shape. S for any other",30);
+   	startGame(settings,"",30);
 }
 
 function reactShapesAndColors(){
 	var settings = {reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Now both color and shape",20);
+    startGame(settings,"Press A for blue, D for yellow",20);
 }
 
 function allFeatures(){
@@ -122,7 +111,7 @@ function testGame(){
 function gapsLineReactShapesAndColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"React to both shape and color", 30);
+    startGame(settings,"Press A for blue, D for yellow", 30);
 }
 
 function tutorial(){

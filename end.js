@@ -15,5 +15,8 @@ var endState = {
 
         var text = this.game.add.text(x, y-50, "Good job!", style);
         text.anchor.setTo(0.5, 0.5); 
+        if(this.game.callback){
+            setTimeout(this.game.callback,2000);
+        }
     }
 };

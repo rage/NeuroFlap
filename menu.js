@@ -18,15 +18,18 @@ var menuState = {
         }
 
         // Adding a text centered on the screen
-        var text = this.game.add.text(x, y-50, this.game.startingMessage, style);
+        var text = this.game.add.text(x, y-75, this.game.startingMessage, style);
         text.anchor.setTo(0.5, 0.5); 
 
         var shapes = ['Circle', 'Triangle', 'Pentagon'];
         this.game.rightShape = shapes[Math.floor(Math.random()*shapes.length)];
 
         if(this.game.settings.shapeReactionsOn){
-            var shapeText = this.game.add.text(x-133, y, "React to " + this.game.rightShape + "s", style);
+            var shapeText = this.game.add.text(x-133, y - 25, "Press W for " + this.game.rightShape + "s. " + "S for others.", style);
             text.anchor.setTo(0.5, 0.5); 
+            // if(this.game.settings.colorReactionsOn){
+            //     this.game.add.text(x-50, y + 25, "Yes, both.", style);
+            // }
         }
 
         this.game.add.sprite(75,300,this.determineKeyPicture());
