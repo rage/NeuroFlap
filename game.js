@@ -69,7 +69,7 @@ function react(){
 function reactColors(){
 	var settings = {reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for blue. D for yellow",20);
+    startGame(settings,"Press A for blue. D for yellow",25);
 }
 
 function gapsLineAndReactColors(){
@@ -81,7 +81,7 @@ function gapsLineAndReactColors(){
 function reactShapes(){
 	var settings = {reactionsOn:true,shapeReactionsOn:true};
 
-   	startGame(settings,"",20);
+   	startGame(settings,"",25);
 }
 
 function gapsLineAndReactShapes(){
@@ -111,7 +111,7 @@ function testGame(){
 function gapsLineReactShapesAndColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for blue, D for yellow", 30);
+    startGame(settings,"Press A for blue, D for yellow AND", 30);
 }
 
 function tutorial(){

@@ -52,7 +52,7 @@ var menuState = {
             } else if (!game.settings.colorReactionsOn && game.settings.shapeReactionsOn){
                 return "ArrowKeysSW";
             } else {
-                return "AllKeys";
+                return "AllKeysRed";
             }
         }
 

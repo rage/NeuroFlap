@@ -18,7 +18,7 @@ var playState = {
         this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
-        this.colors =['Blue','Yellow'];  // green: 057c1a red: a30909 // CHANGE TO BLUE: 0924a3 YELLOW: fdfd09
+        this.colors =['Blue','Yellow'];  // CHANGE TO BLUE: 0924a3 YELLOW: fdfd09
         this.redGradient = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
         this.yellowGradient = ['#FFFF00', '#F0F914', '#E2F329', '#D4ED3E', '#C6E752', '#B8E267', '#A9DC7C', '#9BD690', '#8DD0A5', '#7FCABA', '#71C5CF'];
         this.greenGradient = ['#00FF00', '#0BF914', '#16F329', '#21ED3E', '#2DE752', '#38E267', '#43DC7C', '#4FD690', '#5AD0A5', '#65CABA', '#71C5CF'];
@@ -45,6 +45,8 @@ var playState = {
         this.shapeOn = false;
         this.hitShield = false;
         this.endTimer = this.game.time.events.add(this.game.gameLength * 1000, this.endAndSend, this);
+
+        Math.seedrandom('aikarandomia');
     },
 
     buttonSetup: function(colorReactions,shapeReactions){
@@ -141,7 +143,7 @@ var playState = {
             this.newLine();
         }
 
-        this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);      
+        this.game.physics.overlap(this.bird, this.pipes, this.hitPipe, null, this);  
     },
 
     newLine: function(){
@@ -349,7 +351,7 @@ var playState = {
         this.lastHole = hole;
         for (var i = 0; i < 8; i++){
             if (i != hole && i != hole +1) {
-                this.addOnePipe(i*50, -50);   
+                this.addOnePipe(i*51, -50);   
             }
         }
         this.flyingUpkeep();
@@ -436,7 +438,8 @@ var playState = {
 
     endAndSend: function(){
         this.checkScores();
-        var studentid = document.getElementById("student_id").value;
+        var studentid = this.parse('u');
+        console.log(studentid);
         if(studentid == ""){
             console.log("no student number!");
             studentid = "321";
@@ -468,5 +471,18 @@ var playState = {
         this.running = false;
 
         this.game.state.start('end');
+    },
+
+    parse: function(val) {
+        var result = "Not found",
+            tmp = [];
+        location.search
+        .substr(1)
+            .split("&")
+            .forEach(function (item) {
+            tmp = item.split("=");
+            if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+        });
+        return result;
     }
 };

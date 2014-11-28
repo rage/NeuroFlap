@@ -15,6 +15,7 @@ var loadState = {
         this.game.load.image('ArrowKeysAD', 'assets/ArrowKeysAD.png');
         this.game.load.image('ArrowKeysSW', 'assets/ArrowKeysSW.png');
         this.game.load.image('AllKeys', 'assets/AllKeys.png');
+        this.game.load.image('AllKeysRed', 'assets/AllKeysRed.png');
     },
 
     create: function() {
