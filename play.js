@@ -385,7 +385,7 @@ var playState = {
 
     flyingUpkeep: function() {
         this.checkScoresCounter++;
-        if(this.checkScoresCounter >= 40){
+        if(this.checkScoresCounter >= 30){
             this.checkScores();
         }
         this.timer.delay = 1550 - 25 * this.game.flyingLevel;
