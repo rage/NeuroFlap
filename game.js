@@ -40,7 +40,7 @@ function nextPhase(index, phasesArray){
 
 function gaps(){
 	var settings = {blocksOn:true};
-	startGame(settings,"Go through the gaps", 20);
+	startGame(settings,"Mene aukkojen läpi", 20);
 }
 
 function line(){
@@ -51,13 +51,13 @@ function line(){
 function gapsAndLine(){
 	var settings = {blocksOn:true,lineOn:true};
 
-    startGame(settings,"Now stay on the line too",20);
+    startGame(settings,"Pysyttele samaan aikaan viivalla",20);
 }
 
 function gapsLineAndReact(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true};
 
-   	startGame(settings,"Press any WASD key when you see a shape",20);
+   	startGame(settings,"Paina jotain WASD-näppäintä kun näet kuvion",20);
 }
 
 function react(){
@@ -75,7 +75,7 @@ function reactColors(){
 function gapsLineAndReactColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for blue. D for yellow",30);
+    startGame(settings,"Paina A sinisille, D keltaisille kuvioille",30);
 }
 
 function reactShapes(){
@@ -99,7 +99,7 @@ function reactShapesAndColors(){
 function allFeatures(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Do your best in 4 minutes. For Science.", 240);
+    startGame(settings,"Tee parhaasi 6 minuutin ajan. Tieteen vuoksi.", 360);
 }
 
 function testGame(){
@@ -111,7 +111,7 @@ function testGame(){
 function gapsLineReactShapesAndColors(){
 	var settings = {blocksOn:true,lineOn:true,reactionsOn:true,shapeReactionsOn:true,colorReactionsOn:true};
 
-    startGame(settings,"Press A for blue, D for yellow AND", 30);
+    startGame(settings,"Paina A sinisille, D keltaisille kuvioille JA", 30);
 }
 
 function tutorial(){

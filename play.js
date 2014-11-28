@@ -46,7 +46,30 @@ var playState = {
         this.hitShield = false;
         this.endTimer = this.game.time.events.add(this.game.gameLength * 1000, this.endAndSend, this);
 
-        Math.seedrandom('aikarandomia');
+        this.sessionData();
+    },
+
+    sessionData: function(){
+        if(this.game.gameLength < 200){
+            this.addToLog("Tutorial session starts");
+            if(this.game.settings.blocksOn){
+                this.addToLog("Blocks on");
+            }
+            if(this.game.settings.lineOn){
+                this.addToLog("Line on");
+            }
+            if(game.settings.colorReactionsOn && game.settings.shapeReactionsOn){
+                this.addToLog("Reactions with Color and Shape");
+            } else if (game.settings.colorReactionsOn && !game.settings.shapeReactionsOn){
+                this.addToLog("Reactions with Color");
+            } else if (!game.settings.colorReactionsOn && game.settings.shapeReactionsOn){
+                this.addToLog("Reactions with Shape");
+            } else {
+                this.addToLog("Just Reactions");
+            }
+        } else {
+            this.addToLog("Real data gathering");
+        }
     },
 
     buttonSetup: function(colorReactions,shapeReactions){
@@ -395,7 +418,7 @@ var playState = {
 
         this.resetScores();
 
-        console.log("Flying: " + this.game.flyingLevel + " Reactions: " + this.game.reactionLevel);
+        //console.log("Flying: " + this.game.flyingLevel + " Reactions: " + this.game.reactionLevel);
     },
 
     resetScores: function(){
@@ -439,13 +462,12 @@ var playState = {
     endAndSend: function(){
         this.checkScores();
         var studentid = this.parse('u');
-        console.log(studentid);
         if(studentid == ""){
             console.log("no student number!");
             studentid = "321";
         }
         var actualSession = false;
-        if(this.game.settings.lineOn && this.game.settings.reactionsOn && this.game.settings.blocksOn && this.game.settings.colorReactionsOn && this.game.settings.shapeReactionsOn){
+        if(this.game.settings.lineOn && this.game.settings.reactionsOn && this.game.settings.blocksOn && this.game.settings.colorReactionsOn && this.game.settings.shapeReactionsOn && this.game.gameLength > 200){
             actualSession = true;
         }
         $.ajax({
