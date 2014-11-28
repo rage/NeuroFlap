@@ -412,9 +412,9 @@ var playState = {
     },
 
     checkScores: function() {
-        this.game.flyingLevel += ((((this.flyingObstacles - this.flyingErrors)/this.flyingObstacles) - 0.8) * 10);
+        this.game.flyingLevel += Math.max(-2, ((((this.flyingObstacles - this.flyingErrors)/this.flyingObstacles) - 0.8) * 10));
         if(this.game.settings.reactionsOn){
-            this.game.reactionLevel += ((this.reactionSuccesses / (this.reactionSuccesses + this.reactionFails))- 0.8) * 10;
+            this.game.reactionLevel += Math.max(-2, ((this.reactionSuccesses / (this.reactionSuccesses + this.reactionFails))- 0.8) * 10);
         }
         this.addToLog("Flying: " + this.game.flyingLevel);
         this.addToLog("Reactions: " + this.game.reactionLevel); 
