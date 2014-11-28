@@ -34,7 +34,9 @@ var phases3 = [testGame];
 nextPhase(0,phases2);
 
 function nextPhase(index, phasesArray){
-	phasesArray[index]();
+	if(index < phasesArray.length){
+		phasesArray[index]();
+	}
 	game.callback = (function() {nextPhase(index+1,phasesArray)});
 }
 
