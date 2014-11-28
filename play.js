@@ -297,13 +297,13 @@ var playState = {
             this.logReaction(color,approved);
             if((this.text == this.game.rightShape && this.colorName == color) && approved){
                 this.startGradient(this.greenGradient);
-                this.reactionsScore += 0.75;    
+                this.reactionSuccesses++;   
             } else if((this.text != this.game.rightShape && this.colorName == color) && !approved) {
                 this.startGradient(this.greenGradient);
-                this.reactionsScore += 0.75;
+                this.reactionSuccesses++;
             } else {
                 this.startGradient(this.redGradient);
-                this.reactionsScore -= 0.75;
+                this.reactionFails++;
             }
             this.shapeReactable = false;
             this.realShape.destroy();
@@ -328,9 +328,11 @@ var playState = {
         if(this.exists(this.realShape) && this.shapeReactable){
             if(this.tutorialCheckReaction(color, approved, careAboutColor, careAboutShape)){
                 this.addToLog("Tutorial reaction pass");
+                this.reactionSuccesses++;
                 this.startGradient(this.greenGradient);
             } else{
                 this.addToLog("Tutorial reaction fail");
+                this.reactionFails++;
                 this.startGradient(this.redGradient);
             }
             this.shapeReactable = false;
@@ -346,7 +348,7 @@ var playState = {
             this.hitMarker = this.game.add.sprite(this.bird.x, this.bird.y, "hit");
             this.hitMarker.anchor.setTo(0.5, 0.5);
             this.hitMarker.angle = this.bird.angle;
-            this.flyingScore -= 1.5;
+            this.flyingErrors++;
             this.hitShield = true;
             this.game.time.events.add(500,this.hitShieldOff, this);
         }
@@ -383,13 +385,13 @@ var playState = {
 
     flyingUpkeep: function() {
         this.checkScoresCounter++;
-        if(this.checkScoresCounter >= 15){
+        if(this.checkScoresCounter >= 40){
             this.checkScores();
         }
         this.timer.delay = 1550 - 25 * this.game.flyingLevel;
 
         if(this.lineStatus == "Green"){
-            this.flyingScore += 0.75;
+            this.flyingObstacles++;
         }
     },
 
@@ -398,6 +400,7 @@ var playState = {
     },
 
     newShape: function() {
+        this.checkScoresCounter++;
         this.colorName = this.randomItem(this.colors);
         this.text = this.randomItem(this.shapes);
         this.shapeOffSet = (Math.floor(Math.random()*30)-15);
@@ -409,8 +412,10 @@ var playState = {
     },
 
     checkScores: function() {
-        this.game.flyingLevel += (this.flyingScore - 80)/4;
-        this.game.reactionLevel += (this.reactionsScore - 80)/4;
+        this.game.flyingLevel += ((((this.flyingObstacles - this.flyingErrors)/this.flyingObstacles) - 0.8) * 10);
+        if(this.game.settings.reactionsOn){
+            this.game.reactionLevel += ((this.reactionSuccesses / (this.reactionSuccesses + this.reactionFails))- 0.8) * 10;
+        }
         this.addToLog("Flying: " + this.game.flyingLevel);
         this.addToLog("Reactions: " + this.game.reactionLevel); 
 
@@ -422,8 +427,10 @@ var playState = {
     },
 
     resetScores: function(){
-        this.reactionsScore = 80;
-        this.flyingScore = 80;
+        this.reactionSuccesses = 0;
+        this.reactionFails = 0;
+        this.flyingObstacles = 0;
+        this.flyingErrors = 0;
     },
 
     shapeOff: function(object) {
@@ -431,7 +438,7 @@ var playState = {
         // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
             this.startGradient(this.yellowGradient);
-            this.reactionsScore -= 0.75;
+            this.reactionFails++;
             this.addToLog("Shape Missed"); 
             object.destroy();
         }
