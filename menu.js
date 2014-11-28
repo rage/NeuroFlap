@@ -13,7 +13,7 @@ var menuState = {
         var x = game.world.width/2, y = game.world.height/2;
 
         // Adding a text centered on the screen
-        var text = this.game.add.text(x, y-75, this.game.startingMessage, styleSmaller);
+        var text = this.game.add.text(x, y-125, this.game.startingMessage, styleSmaller);
         text.anchor.setTo(0.5, 0.5); 
 
         var shapes = ['Circle', 'Triangle', 'Pentagon'];
@@ -21,9 +21,14 @@ var menuState = {
         var shapeIndex = Math.floor(Math.random()*shapes.length);
         this.game.rightShape = shapes[shapeIndex];
 
-        if(this.game.settings.shapeReactionsOn){
+        if(this.game.settings.shapeReactionsOn && this.game.gameLength < 200){
             var shapeText = this.game.add.text(x-133, y - 25, "Paina W " + namesOfShapes[shapeIndex] + ". " + "S muille.", styleSmaller);
             text.anchor.setTo(0.5, 0.5); 
+        } else if(this.game.gameLength > 200){
+            this.game.add.text(x-133, y-100, "Mene aukkojen läpi", styleSmaller);
+            this.game.add.text(x-133, y-75, "Pysy viivalla", styleSmaller);
+            this.game.add.text(x-133, y-50, "Paina A sinisille, D keltaisille kuvioille JA", styleSmaller);
+            this.game.add.text(x-133, y - 25, "Paina W " + namesOfShapes[shapeIndex] + ". " + "S muille.", styleSmaller);
         }
 
         this.game.add.sprite(75,300,this.determineKeyPicture());
