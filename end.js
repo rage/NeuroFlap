@@ -5,11 +5,11 @@ var endState = {
         var x = game.world.width/2, y = game.world.height/2;
 
         if(this.game.flyingLevel != 0){
-            var flyingScoreText = this.game.add.text(x, y-150, "Lentäminen: " + this.game.flyingLevel, style);
+            var flyingScoreText = this.game.add.text(x, y-150, "Lentäminen: " + this.game.flyingLevel.toFixed(2), style);
             flyingScoreText.anchor.setTo(0.5,0.5);
         }
         if(this.game.reactionLevel != 0){
-            var reactionScoreText = this.game.add.text(x, y-100, "Reaktiot: " + this.game.reactionLevel, style);
+            var reactionScoreText = this.game.add.text(x, y-100, "Reaktiot: " + this.game.reactionLevel.toFixed(2), style);
             reactionScoreText.anchor.setTo(0.5,0.5);
         }
 
