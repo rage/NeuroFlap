@@ -112,7 +112,6 @@ var playState = {
     },
 
     keyPressed: function(key){
-        // LURD 37-40
         this.addToLog(this.keyCodeToName(key.keyCode) + " Pressed");
     },
 
@@ -126,7 +125,6 @@ var playState = {
 
     addToLog: function(event){
         var entry = {time: this.getTimeNow(), event: event};
-        //console.log(entry);
         if(this.running){
             this.game.loggingArray.push(entry);
         }
@@ -169,7 +167,7 @@ var playState = {
     },
 
     newLine: function(){
-        var shape = game.add.graphics(0, 0);  //init rect
+        var shape = game.add.graphics(0, 0);
         shape.beginFill(0x00FF0B, 1);
         
         if(Math.abs((this.bird.body.y + 24) - this.lineY) < 15){
@@ -186,8 +184,8 @@ var playState = {
             shape.lineStyle(2, 0xB43104, 1); 
         }
 
-        shape.moveTo(0, this.lineY); // x, y
-        shape.lineTo(400, this.lineY); // x, y        
+        shape.moveTo(0, this.lineY);
+        shape.lineTo(400, this.lineY);       
         this.moveLine();
 
         this.game.time.events.add(1,this.destroyShape, this,shape);
@@ -347,8 +345,8 @@ var playState = {
             this.hitMarker = this.game.add.sprite(this.bird.x, this.bird.y, "hit");
             this.hitMarker.anchor.setTo(0.5, 0.5);
             this.hitMarker.angle = this.bird.angle;
-            this.flyingErrors++;
             this.hitShield = true;
+            this.hitForScoring = true;
             this.game.time.events.add(500,this.hitShieldOff, this);
         }
     },
@@ -383,14 +381,20 @@ var playState = {
     },
 
     flyingUpkeep: function() {
+        //console.log("S:" + this.flyingSuccesses + " O: " + this. flyingObstacles + " F: " + this.game.flyingLevel);
+
         this.checkScoresCounter++;
         if(this.checkScoresCounter >= 30){
             this.checkScores();
         }
         this.timer.delay = 1550 - 25 * this.game.flyingLevel;
 
-        if(this.lineStatus == "Green"){
-            this.flyingObstacles++;
+        this.flyingObstacles++;
+        if(this.lineStatus == "Green" && !this.hitForScoring){
+            this.flyingSuccesses++;
+        }
+        if(this.hitForScoring){
+            this.hitForScoring = false;
         }
     },
 
@@ -412,7 +416,7 @@ var playState = {
 
     checkScores: function() {
         if(this.flyingObstacles != 0){
-            this.game.flyingLevel += Math.max(-2, ((((this.flyingObstacles - this.flyingErrors)/this.flyingObstacles) - 0.8) * 10));
+            this.game.flyingLevel += Math.max(-2, ((((this.flyingSuccesses)/this.flyingObstacles) - 0.8) * 10));
         }
         if(this.game.settings.reactionsOn){
             if((this.reactionSuccesses + this.reactionFails) > 0){
@@ -433,7 +437,7 @@ var playState = {
         this.reactionSuccesses = 0;
         this.reactionFails = 0;
         this.flyingObstacles = 0;
-        this.flyingErrors = 0;
+        this.flyingSuccesses = 0;
     },
 
     shapeOff: function(object) {
