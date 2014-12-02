@@ -14,17 +14,12 @@ var playState = {
         }
 
         this.bird = this.game.add.sprite(150, 450, 'bird');
-        //this.bird.body.gravity.y = 0; 
         this.bird.anchor.setTo(0.5, 0.5);
 
         this.shapes = ['Circle', 'Triangle', 'Pentagon'];
-        this.colors =['Blue','Yellow'];  // CHANGE TO BLUE: 0924a3 YELLOW: fdfd09
+        this.colors =['Blue','Yellow'];  // BLUE: 0924a3 YELLOW: fdfd09
         this.redGradient = ['#FF0000', '#F01314', '#E22729', '#D43B3E', '#C64E52', '#B86267', '#A9767C', '#9B8990', '#8D9DA5', '#7FB1BA', '#71C5CF'];
         this.greenGradient = ['#00FF00', '#0BF914', '#16F329', '#21ED3E', '#2DE752', '#38E267', '#43DC7C', '#4FD690', '#5AD0A5', '#65CABA', '#71C5CF'];
-
-        this.reactionIndicator = this.game.add.graphics(500,500);
-        this.reactionIndicator.beginFill('#00FF00',1);
-        this.reactionIndicator.drawRect(100, 100, 400, 100);
 
         this.game.flyingLevel = 10;
         this.game.reactionLevel = 10;
@@ -35,9 +30,6 @@ var playState = {
         this.lineDestination = 400;
         this.lineStatus = "Green";
 
-        var style = { font: "30px Arial", fill: "#ffffff" };
-        // this.flyingLabel = this.game.add.text(20, 20, "10", style);
-        // this.reactionsLabel = this.game.add.text(330, 20, "10", style); 
         if(this.game.settings.reactionsOn){
             this.shapeTimer = this.game.time.events.loop(2000, this.newShape, this);        
         }
@@ -285,7 +277,6 @@ var playState = {
     logReaction: function(color,approved){
         var pressed = "Pressed: " + this.colorApprovedToButtons(color,approved);
         var toPress = "Target: " + this.colorApprovedToButtons(this.colorName, this.text == this.game.rightShape);
-        //console.log(pressed + " " + toPress);
         this.addToLog(pressed + " " + toPress);
     },
 
@@ -381,8 +372,6 @@ var playState = {
     },
 
     flyingUpkeep: function() {
-        //console.log("S:" + this.flyingSuccesses + " O: " + this. flyingObstacles + " F: " + this.game.flyingLevel);
-
         this.checkScoresCounter++;
         if(this.checkScoresCounter >= 30){
             this.checkScores();
@@ -429,8 +418,6 @@ var playState = {
         this.checkScoresCounter = 0;
 
         this.resetScores();
-
-        //console.log("Flying: " + this.game.flyingLevel + " Reactions: " + this.game.reactionLevel);
     },
 
     resetScores: function(){
@@ -442,7 +429,6 @@ var playState = {
 
     shapeOff: function(object) {
         this.shapeReactable = false;
-        // this.reactionsLabel.content = reactionLevel;
         if(object.exists){
             this.reactionFails++;
             this.addToLog("Shape Missed"); 
@@ -494,7 +480,6 @@ var playState = {
             console.log("ERROR! DATA NOT SENT");
           }
         });
-        //console.log("data was: studentid: " + studentid + " flyinglevel: " + this.game.flyingLevel + " reactions: " + this.game.reactionLevel + " realData: " + actualSession);
 
         this.restartGame();
     },
